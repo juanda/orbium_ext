@@ -5,22 +5,32 @@ Ext.define('Orbium.view.Toolbar', {
         this.items = [
             {
                 xtype: 'button', // default for Toolbars
-                name: 'play',
+                action: 'play',
                 text: 'play',               
             },
             {
                 xtype: 'button',
-                name: 'pause',
+                action: 'pause',
                 text: 'pause'
             },
             {
                 xtype: 'button',
-                name: 'stop',
+                action: 'stop',
                 text: 'stop'
             },
             {
                 xtype: 'button',
-                name: 'gravity',
+                action: 'addCube',
+                text: 'Add Cube'
+            },
+            {
+                xtype: 'button',
+                action: 'addBall',
+                text: 'Add Ball'
+            },
+            {
+                xtype: 'button',
+                action: 'gravity',
                 text: 'gravity',
                 enableToggle: true
             }

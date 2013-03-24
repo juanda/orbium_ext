@@ -8,15 +8,17 @@ Ext.define('Orbium.controller.World', {
             }
         });
     },
+    requires: ['Orbium.world.World'],
     onWorldRendered: function() {
-        console.log('Orbium.controller.World worldRendered');
+        Orbium.app.consoleLog('Orbium.controller.World worldRendered');
         
-        worlds = Ext.ComponentQuery.query('world');
-        console.log(worlds);
-        world = worlds[0];    
-        console.log(world.getViewer());
+        var worlds = Ext.ComponentQuery.query('world');
+        //Orbium.app.consoleLog(worlds);
+        var world = worlds[0];    
+        //Orbium.app.consoleLog(world.getViewer());
         
-        mundo = Ext.create('Orbium.world.World', world);      
+        // Creacion del mundo
+        Orbium.app.mundo = Ext.create('Orbium.world.World', world);      
     }
 });
 

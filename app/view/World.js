@@ -5,7 +5,7 @@ Ext.define('Orbium.view.World', {
     
     
     initComponent: function() {
-        console.log('initComponent de Orbium.view.World');                
+        Orbium.app.consoleLog('initComponent de Orbium.view.World');                
     },
     
     getViewer: function(){
