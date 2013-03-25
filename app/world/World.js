@@ -1,35 +1,48 @@
 Ext.define('Orbium.world.World', {
-    balls: [],
+    bodies: [],
     worldStatus: "STOPPED",
     constructor: function(world) {
 
         Orbium.app.consoleLog('constructor Orbium.World');
         Orbium.app.consoleLog(world);
 
-        var config = {veloCamara: 1};
-        this.veloCamara = (config.veloCamara || 1);
+        that = this;
+        // Create scene, camera and renderer
+        (function() {
+            var config = {veloCamara: 1};
+            that.veloCamara = (config.veloCamara || 1);
 
-        var container = world.getViewer();
+            var container = world.getViewer();
 
-        this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-        this.camera.position.y = 150;
-        this.camera.position.z = 500;
+            that.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);            
+            that.camera.position.z = 30;
 
-        this.scene = new THREE.Scene();
+            that.scene = new THREE.Scene();
 
-        this.renderer = new THREE.CanvasRenderer();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+            that.renderer = new THREE.CanvasRenderer();
+            that.renderer.setSize(window.innerWidth, window.innerHeight);
 
-        container.appendChild(this.renderer.domElement);
+            container.appendChild(that.renderer.domElement);
 
-        if (Orbium.app.debug) {
-            this.stats = new Stats();
-            this.stats.domElement.style.position = 'absolute';
-            this.stats.domElement.style.top = '30px';
-            container.appendChild(this.stats.domElement);
-        }
+            // To monitor performance (fps)
+            if (Orbium.app.debug) {
+                that.stats = new Stats();
+                that.stats.domElement.style.position = 'absolute';
+                that.stats.domElement.style.top = '30px';
+                container.appendChild(that.stats.domElement);
+            }
 
-        this.renderer.render(this.scene, this.camera);
+            that.renderer.render(that.scene, that.camera);
+        }());
+
+        // Create the physics engine
+        (function() {
+            that.timeStep = 1 / 60;
+            that.physicsWorld = new CANNON.World();
+            that.physicsWorld.gravity.set(0, -9.8, 0);
+            that.physicsWorld.broadphase = new CANNON.NaiveBroadphase();
+            that.physicsWorld.solver.iterations = 10;
+        }());
 
     },
     render: function() {
@@ -40,9 +53,9 @@ Ext.define('Orbium.world.World', {
         } else {
             btnAddBall[0].enable();
         }
-        for (k in this.balls) {
-            this.balls[k].position.y -= Math.random() * 2;
-        }
+//        for (k in this.bodies) {
+//            this.bodies[k].position.y -= Math.random() * 2;
+//        }
         Orbium.app.consoleLog("requestAnimationId: " + this.requestAnimationId);
         this.renderer.render(this.scene, this.camera);
     },
@@ -50,7 +63,7 @@ Ext.define('Orbium.world.World', {
 
         this.requestAnimationId = requestAnimationFrame(this.animate.bind(this));
 
-        console.log("hola");
+        this.updatePhysics();
         this.render();
 //        if (this.stats) {
 //            stats.update();
@@ -66,6 +79,17 @@ Ext.define('Orbium.world.World', {
         this.deltaCamera = this.veloCamara * this.repeat / 10;
 
     },
+    updatePhysics: function() {
+        // Step the physics world
+        this.physicsWorld.step(this.timeStep);
+
+        // Copy coordinates from Cannon.js to Three.js
+        for (k in this.bodies) {
+            this.bodies[k].physics.position.copy(this.bodies[k].mesh.position);
+            this.bodies[k].physics.quaternion.copy(this.bodies[k].mesh.quaternion);
+        }
+
+    },
     startAnimation: function() {
         this.animate();
         this.worldStatus = "RUNNING";
@@ -74,9 +98,9 @@ Ext.define('Orbium.world.World', {
         cancelAnimationFrame(this.requestAnimationId);
 
         // Reset world state
-        for (k in this.balls) {
-            this.balls[k].position.y = this.balls[k].position.y0;
-            this.balls[k].position.x = this.balls[k].position.x0;
+        for (k in this.bodies) {
+            this.bodies[k].mesh.position.y = this.bodies[k].mesh.position.y0;
+            this.bodies[k].mesh.position.x = this.bodies[k].mesh.position.x0;
         }
 
         this.worldStatus = "STOPPED";
@@ -87,20 +111,26 @@ Ext.define('Orbium.world.World', {
         this.worldStatus = "PAUSED";
     },
     addCube: function() {
-        var geometry = new THREE.CubeGeometry(100, 200, 300);
+        
+        var body={};
+        
+        var shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
+        var mass = 1;
+        body.physics = new CANNON.RigidBody(mass, shape);
+        body.physics.angularVelocity.set(0, 0, 3);
+        body.physics.angularDamping = 0;
 
-        for (var i = 0; i < geometry.faces.length; i++) {
+        this.physicsWorld.add(body.physics);
 
-            geometry.faces[ i ].color.setHex(Math.random() * 0xffffff);
+        var geometry = new THREE.CubeGeometry(2, 2, 2);
+        var material = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe: true});
 
-        }
-
-        var material = new THREE.MeshBasicMaterial({vertexColors: THREE.FaceColors});
-
-        var cube = new THREE.Mesh(geometry, material);
-        cube.position.y = 100;
-        cube.position.z = 100;
-        this.scene.add(cube);
+        body.mesh = new THREE.Mesh(geometry, material);
+        body.mesh.useQuaternion = true;
+        this.scene.add(body.mesh);
+        
+        this.bodies.push(body);
+        
         this.renderer.render(this.scene, this.camera);
     },
     addBall: function() {
@@ -112,7 +142,8 @@ Ext.define('Orbium.world.World', {
             z0: Math.random() * 100,
             vx0: 0,
             vy0: 0,
-            vz0: 0
+            vz0: 0,
+            m: 1
         };
 
         var geometry = new THREE.SphereGeometry(params.r, 20, 20);
@@ -129,7 +160,7 @@ Ext.define('Orbium.world.World', {
         body.position.x = body.position.x0;
         body.position.z = body.position.z0;
 
-        this.balls.push(body);
+        this.bodies.push(body);
 
         this.scene.add(body);
         this.render();
