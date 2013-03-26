@@ -1,6 +1,7 @@
 Ext.define('Orbium.world.World', {
     bodies: [],
     worldStatus: "STOPPED",
+    cannonToThreeMultiplier: 2,
     constructor: function(world) {
 
         Orbium.app.consoleLog('constructor Orbium.World');
@@ -100,15 +101,15 @@ Ext.define('Orbium.world.World', {
 
         for (k in this.bodies) {
             // reset physical position and copy on associated mesh
-            this.bodies[k].physics.position.x = this.bodies[k].initialConditions.x0;
-            this.bodies[k].physics.position.y = this.bodies[k].initialConditions.y0;
-            this.bodies[k].physics.position.z = this.bodies[k].initialConditions.z0;
+            this.bodies[k].physics.position.x = this.bodies[k].initialConditions.position.x;
+            this.bodies[k].physics.position.y = this.bodies[k].initialConditions.position.y;
+            this.bodies[k].physics.position.z = this.bodies[k].initialConditions.position.z;
             this.bodies[k].physics.position.copy(this.bodies[k].mesh.position);
 
             // reset physical quaternion and copy on associated mesh
-            this.bodies[k].physics.velocity.x = this.bodies[k].initialConditions.vx0;
-            this.bodies[k].physics.velocity.y = this.bodies[k].initialConditions.vy0;
-            this.bodies[k].physics.velocity.z = this.bodies[k].initialConditions.vz0;
+            this.bodies[k].physics.velocity.x = this.bodies[k].initialConditions.velocity.x;
+            this.bodies[k].physics.velocity.y = this.bodies[k].initialConditions.velocity.y;
+            this.bodies[k].physics.velocity.z = this.bodies[k].initialConditions.velocity.z;
 
             //¿Qué pasa con el cuaternión cuando reseteamos?
             this.bodies[k].physics.quaternion.x = 0;
@@ -130,68 +131,121 @@ Ext.define('Orbium.world.World', {
         var body = {};
 
         var config = {
+            mass: 1,
+            angularDamping: 0,
             geometry: {
                 width: 2,
                 height: 2,
                 depth: 2
             },
             position: {
-                x0: 10,
-                y0: 0,
-                z0: 0,
+                x: 0,
+                y: 0,
+                z: 0,
             },
             velocity: {
-                vx0: 0,
-                vy0: 0,
-                vz0: 0,
+                x: 10,
+                y: 10,
+                z: 0,
             },
             angularVelocity: {
-                wx0: 0,
-                wy0: 0,
-                wz0: 0
+                x: 10,
+                y: 10,
+                z: 10
             }
         };
 
         body.initialConditions = config;
 
+        var m = this.cannonToThreeMultiplier;
+
         // Create the physics part of the body object
-        var shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
-        var mass = 1;
+        var shape = new CANNON.Box(
+                new CANNON.Vec3(body.initialConditions.geometry.width / m,
+                body.initialConditions.geometry.height / m,
+                body.initialConditions.geometry.depth / m)
+                );
+        var mass = body.initialConditions.mass;
         body.physics = new CANNON.RigidBody(mass, shape);
 
-        body.physics.position.x = 10;
-        body.physics.angularVelocity.set(config.wx0, config.wy0, config.wz0);
-        body.physics.angularDamping = 0;
+        body.physics.position.x = body.initialConditions.position.x;
+        body.physics.position.y = body.initialConditions.position.y;
+        body.physics.position.z = body.initialConditions.position.z;
+
+        body.physics.velocity.x = body.initialConditions.velocity.x;
+        body.physics.velocity.y = body.initialConditions.velocity.y;
+        body.physics.velocity.z = body.initialConditions.velocity.z;
+
+        body.physics.angularVelocity.set(
+                body.initialConditions.angularVelocity.x,
+                body.initialConditions.angularVelocity.y,
+                body.initialConditions.angularVelocity.z
+                );
+        body.physics.angularDamping = body.initialConditions.angularDamping;
 
         this.physicsWorld.add(body.physics);
 
-        var geometry = new THREE.CubeGeometry(2, 2, 2);
+        // Create de visual (mesh) part of the phisical body
+        var geometry = new THREE.CubeGeometry(
+                body.initialConditions.geometry.width,
+                body.initialConditions.geometry.width,
+                body.initialConditions.geometry.width
+                );
         var material = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe: true});
 
         body.mesh = new THREE.Mesh(geometry, material);
         body.mesh.useQuaternion = true;
 
-        body.physics.position.x = config.x0;
         body.physics.position.copy(body.mesh.position);
 
+        // Add to viewew scene
         this.scene.add(body.mesh);
 
+        // Add to bodies collection
         this.bodies.push(body);
 
+        // render
         this.renderer.render(this.scene, this.camera);
     },
     addBall: function() {
 
-        var params = {
-            r: 20,
-            x0: Math.random() * 300,
-            y0: Math.random() * 300,
-            z0: Math.random() * 100,
-            vx0: 0,
-            vy0: 0,
-            vz0: 0,
-            m: 1
+        var body = {};
+
+        var config = {
+            mass: 1,
+            angularDamping: 0,
+            geometry: {
+                width: 2,
+                height: 2,
+                depth: 2
+            },
+            position: {
+                x: 0,
+                y: 25,
+                z: 0,
+            },
+            velocity: {
+                x: 10,
+                y: 0,
+                z: 0,
+            },
+            angularVelocity: {
+                x: 10,
+                y: 10,
+                z: 10
+            }
         };
+
+        body.initialConditions = config;
+
+        var m = this.cannonToThreeMultiplier;
+
+        var shape = new CANNON.Sphere(size);
+
+        // Shape on plane       
+        var body = new CANNON.RigidBody(body.initialConditions.mass, shape);
+
+        this.physicsWorld.add(body.physics);
 
         var geometry = new THREE.SphereGeometry(params.r, 20, 20);
 
