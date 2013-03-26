@@ -215,17 +215,15 @@ Ext.define('Orbium.world.World', {
             mass: 1,
             angularDamping: 0,
             geometry: {
-                width: 2,
-                height: 2,
-                depth: 2
+                radius: 1
             },
             position: {
                 x: 0,
-                y: 25,
+                y: 10,
                 z: 0,
             },
             velocity: {
-                x: 10,
+                x: -25,
                 y: 0,
                 z: 0,
             },
@@ -240,31 +238,39 @@ Ext.define('Orbium.world.World', {
 
         var m = this.cannonToThreeMultiplier;
 
-        var shape = new CANNON.Sphere(size);
+        var shape = new CANNON.Sphere(body.initialConditions.geometry.radius / m);
 
         // Shape on plane       
-        var body = new CANNON.RigidBody(body.initialConditions.mass, shape);
+        body.physics = new CANNON.RigidBody(body.initialConditions.mass, shape);
+
+        body.physics.position.x = body.initialConditions.position.x;
+        body.physics.position.y = body.initialConditions.position.y;
+        body.physics.position.z = body.initialConditions.position.z;
+
+        body.physics.velocity.x = body.initialConditions.velocity.x;
+        body.physics.velocity.y = body.initialConditions.velocity.y;
+        body.physics.velocity.z = body.initialConditions.velocity.z;
 
         this.physicsWorld.add(body.physics);
 
-        var geometry = new THREE.SphereGeometry(params.r, 20, 20);
+        var geometry = new THREE.SphereGeometry(body.initialConditions.geometry.radius, 20, 20);
 
         var material = new THREE.MeshBasicMaterial({color: 0xff0000});
 
-        var body = new THREE.Mesh(geometry, material);
-        body.position.y0 = params.y0;
-        body.position.x0 = params.x0;
-        body.position.z0 = params.z0;
-        //body.velocity.x0 = params.vx0;
+        body.mesh = new THREE.Mesh(geometry, material);
+        body.mesh.useQuaternion = true;
 
-        body.position.y = body.position.y0;
-        body.position.x = body.position.x0;
-        body.position.z = body.position.z0;
+        body.physics.position.copy(body.mesh.position);
 
+
+        // Add to viewew scene
+        this.scene.add(body.mesh);
+
+        // Add to bodies collection
         this.bodies.push(body);
 
-        this.scene.add(body);
-        this.render();
+        // render
+        this.renderer.render(this.scene, this.camera);
     }
 })
 
