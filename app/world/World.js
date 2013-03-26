@@ -6,44 +6,42 @@ Ext.define('Orbium.world.World', {
         Orbium.app.consoleLog('constructor Orbium.World');
         Orbium.app.consoleLog(world);
 
-        that = this;
-        // Create scene, camera and renderer
-        (function() {
-            var config = {veloCamara: 1};
-            that.veloCamara = (config.veloCamara || 1);
+        this.initScene(world);
+        this.initPhysicsWorld();
 
-            var container = world.getViewer();
+    },
+    initPhysicsWorld: function() {
+        this.timeStep = 1 / 60;
+        this.physicsWorld = new CANNON.World();
+        this.physicsWorld.gravity.set(0, -5, 0);
+        this.physicsWorld.broadphase = new CANNON.NaiveBroadphase();
+        this.physicsWorld.solver.iterations = 10;
+    },
+    initScene: function(world) {
+        var config = {veloCamara: 1};
+        this.veloCamara = (config.veloCamara || 1);
 
-            that.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);            
-            that.camera.position.z = 30;
+        var container = world.getViewer();
 
-            that.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
+        this.camera.position.z = 30;
 
-            that.renderer = new THREE.CanvasRenderer();
-            that.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.scene = new THREE.Scene();
 
-            container.appendChild(that.renderer.domElement);
+        this.renderer = new THREE.CanvasRenderer();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-            // To monitor performance (fps)
-            if (Orbium.app.debug) {
-                that.stats = new Stats();
-                that.stats.domElement.style.position = 'absolute';
-                that.stats.domElement.style.top = '30px';
-                container.appendChild(that.stats.domElement);
-            }
+        container.appendChild(this.renderer.domElement);
 
-            that.renderer.render(that.scene, that.camera);
-        }());
+        // To monitor performance (fps)
+        if (Orbium.app.debug) {
+            this.stats = new Stats();
+            this.stats.domElement.style.position = 'absolute';
+            this.stats.domElement.style.top = '30px';
+            container.appendChild(this.stats.domElement);
+        }
 
-        // Create the physics engine
-        (function() {
-            that.timeStep = 1 / 60;
-            that.physicsWorld = new CANNON.World();
-            that.physicsWorld.gravity.set(0, -9.8, 0);
-            that.physicsWorld.broadphase = new CANNON.NaiveBroadphase();
-            that.physicsWorld.solver.iterations = 10;
-        }());
-
+        this.renderer.render(this.scene, this.camera);
     },
     render: function() {
         var btnAddBall = Ext.ComponentQuery.query('orbiumtoolbar button[action=addBall]');
@@ -57,27 +55,8 @@ Ext.define('Orbium.world.World', {
 //            this.bodies[k].position.y -= Math.random() * 2;
 //        }
         Orbium.app.consoleLog("requestAnimationId: " + this.requestAnimationId);
+        Orbium.app.consoleLog("stepnumber: " + this.physicsWorld.time);
         this.renderer.render(this.scene, this.camera);
-    },
-    animate: function() {
-
-        this.requestAnimationId = requestAnimationFrame(this.animate.bind(this));
-
-        this.updatePhysics();
-        this.render();
-//        if (this.stats) {
-//            stats.update();
-//        }
-
-        // deltaCamera tunning to get a camera constant velocity
-        var time;
-        var now = new Date().getTime();
-
-        this.repeat = now - (time || now);
-        time = now;
-
-        this.deltaCamera = this.veloCamara * this.repeat / 10;
-
     },
     updatePhysics: function() {
         // Step the physics world
@@ -90,6 +69,26 @@ Ext.define('Orbium.world.World', {
         }
 
     },
+    animate: function() {
+
+        this.requestAnimationId = requestAnimationFrame(this.animate.bind(this));
+
+        this.updatePhysics();
+        this.render();
+        if (this.stats) {
+            this.stats.update();
+        }
+
+        // deltaCamera tunning to get a camera constant velocity
+        var time;
+        var now = new Date().getTime();
+
+        this.repeat = now - (time || now);
+        time = now;
+
+        this.deltaCamera = this.veloCamara * this.repeat / 10;
+
+    },
     startAnimation: function() {
         this.animate();
         this.worldStatus = "RUNNING";
@@ -98,9 +97,25 @@ Ext.define('Orbium.world.World', {
         cancelAnimationFrame(this.requestAnimationId);
 
         // Reset world state
+
         for (k in this.bodies) {
-            this.bodies[k].mesh.position.y = this.bodies[k].mesh.position.y0;
-            this.bodies[k].mesh.position.x = this.bodies[k].mesh.position.x0;
+            // reset physical position and copy on associated mesh
+            this.bodies[k].physics.position.x = this.bodies[k].initialConditions.x0;
+            this.bodies[k].physics.position.y = this.bodies[k].initialConditions.y0;
+            this.bodies[k].physics.position.z = this.bodies[k].initialConditions.z0;
+            this.bodies[k].physics.position.copy(this.bodies[k].mesh.position);
+
+            // reset physical quaternion and copy on associated mesh
+            this.bodies[k].physics.velocity.x = this.bodies[k].initialConditions.vx0;
+            this.bodies[k].physics.velocity.y = this.bodies[k].initialConditions.vy0;
+            this.bodies[k].physics.velocity.z = this.bodies[k].initialConditions.vz0;
+
+            //¿Qué pasa con el cuaternión cuando reseteamos?
+            this.bodies[k].physics.quaternion.x = 0;
+            this.bodies[k].physics.quaternion.y = 0;
+            this.bodies[k].physics.quaternion.z = 0;
+
+            this.bodies[k].physics.quaternion.copy(this.bodies[k].mesh.quaternion);
         }
 
         this.worldStatus = "STOPPED";
@@ -111,13 +126,41 @@ Ext.define('Orbium.world.World', {
         this.worldStatus = "PAUSED";
     },
     addCube: function() {
-        
-        var body={};
-        
+
+        var body = {};
+
+        var config = {
+            geometry: {
+                width: 2,
+                height: 2,
+                depth: 2
+            },
+            position: {
+                x0: 10,
+                y0: 0,
+                z0: 0,
+            },
+            velocity: {
+                vx0: 0,
+                vy0: 0,
+                vz0: 0,
+            },
+            angularVelocity: {
+                wx0: 0,
+                wy0: 0,
+                wz0: 0
+            }
+        };
+
+        body.initialConditions = config;
+
+        // Create the physics part of the body object
         var shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
         var mass = 1;
         body.physics = new CANNON.RigidBody(mass, shape);
-        body.physics.angularVelocity.set(0, 0, 3);
+
+        body.physics.position.x = 10;
+        body.physics.angularVelocity.set(config.wx0, config.wy0, config.wz0);
         body.physics.angularDamping = 0;
 
         this.physicsWorld.add(body.physics);
@@ -127,10 +170,14 @@ Ext.define('Orbium.world.World', {
 
         body.mesh = new THREE.Mesh(geometry, material);
         body.mesh.useQuaternion = true;
+
+        body.physics.position.x = config.x0;
+        body.physics.position.copy(body.mesh.position);
+
         this.scene.add(body.mesh);
-        
+
         this.bodies.push(body);
-        
+
         this.renderer.render(this.scene, this.camera);
     },
     addBall: function() {
