@@ -3,20 +3,20 @@ Ext.define('Orbium.controller.Toolbar', {
     init: function() {
 
         this.control({
-            'orbiumtoolbar button[action=play]': {
+            'orbiumtoolbarplayer button[action=play]': {
                 click: this.onPlay
             },
-            'orbiumtoolbar button[action=pause]': {
+            'orbiumtoolbarplayer button[action=pause]': {
                 click: this.onPause
             },
-            'orbiumtoolbar button[action=stop]': {
+            'orbiumtoolbarplayer button[action=stop]': {
                 click: this.onStop
             },
-            'orbiumtoolbar button[action=addCube]': {
+            'orbiumtoolbarbodies button[action=addCube]': {
                 click: this.onAddCube
             },
-            'orbiumtoolbar button[action=addBall]': {
-                click: this.onAddBall
+            'orbiumtoolbarbodies button[action=addBall]': {
+                click: this.onAddSphere
             },
         });
     },
@@ -36,8 +36,8 @@ Ext.define('Orbium.controller.Toolbar', {
         Orbium.app.consoleLog('add cube clicked');
         Orbium.app.mundo.addCube();
     },
-    onAddBall: function() {
-        Orbium.app.consoleLog('add ball clicked');
-        Orbium.app.mundo.addBall();
+    onAddSphere: function() {
+        Orbium.app.consoleLog('add sphere clicked');
+        Orbium.app.mundo.addSphere();
     }
 });

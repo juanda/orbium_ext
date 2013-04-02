@@ -1,23 +1,10 @@
-Ext.define('Orbium.view.Toolbar', {
+Ext.define('Orbium.view.ToolbarBodies', {
     extend: 'Ext.toolbar.Toolbar',
-    alias: 'widget.orbiumtoolbar',
+    alias: 'widget.orbiumtoolbarbodies',
+    width: 400,
     initComponent: function() {
-        this.items = [
-            {
-                xtype: 'button', // default for Toolbars
-                action: 'play',
-                text: 'play',               
-            },
-            {
-                xtype: 'button',
-                action: 'pause',
-                text: 'pause'
-            },
-            {
-                xtype: 'button',
-                action: 'stop',
-                text: 'stop'
-            },
+        
+        this.items = [            
             {
                 xtype: 'button',
                 action: 'addCube',

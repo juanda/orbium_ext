@@ -1,21 +1,56 @@
-Ext.define('Orbium.world.Body', {
-    constructor: function(posInitial, velInitial, mass) {
-        
-        pos = ( typeof posInitial === 'undefined')? {} : posInitial;
-        vel = ( typeof velInitial === 'undefined')? {} : velInitial;
-        mass = (typeof mass       === 'undefined')? 1 : mass;
-       
-        this.position.x = pos.x || 0;
-        this.position.y = pos.y || 0;
-        this.position.z = pos.z || 0;
+Ext.define('Orbium.world.BaseBody', {
+    cannonToThreeMultiplier: 2,
+    constructor: function(params) {
 
-        this.velocity.x = vel.x || 0;
-        this.velocity.x = vel.y || 0;
-        this.velocity.x = vel.z || 0;
+        var defaultParams = {
+            physicsParams: {
+                mass: 1
+            },
+            geometry: {
+                radius: 1
+            },
+            initialConditions: {
+                position: {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                },
+                velocity: {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                }
+            }
+        };
+        if(typeof this.parameters === 'undefined'){
+            this.parameters = {};
+        }
+        Ext.Object.merge(this.parameters, defaultParams);
 
-        this.mass = mass;
+        if (typeof params !== 'undefined') {
+            Ext.Object.merge(this.parameters, params);
+        }
+
+        this.physics = {};
+        this.mesh = {};
+
     },
-    addToWorld: function() {
+    initialize: function() {
+        this.initPhysics();
+        this.initMesh();
+
+    },
+    initPhysics: function() {
+        throw "the method initPhysics is not implemented by this object";
+
+    },
+    initMesh: function() {
+        throw "the method initMesh is not implemented by this object";
+    },
+    addToWorld: function(world) {
+
+        world.physicsWorld.add(this.physics);
+        world.scene.add(this.mesh);
 
     }
 });
