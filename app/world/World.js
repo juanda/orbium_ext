@@ -150,7 +150,7 @@ Ext.define('Orbium.world.World', {
                 angularVelocity: {
                     x: 0,
                     y: 0,
-                    z: 10
+                    z: 0
                 }
             }
         };

@@ -8,7 +8,7 @@ Ext.define('Orbium.controller.World', {
             }
         });
     },
-    requires: ['Orbium.world.World'],
+    requires: ['Orbium.world.World', 'Orbium.world.Cube', 'Orbium.world.Sphere'],
     onWorldRendered: function() {
         Orbium.app.consoleLog('Orbium.controller.World worldRendered');
         
