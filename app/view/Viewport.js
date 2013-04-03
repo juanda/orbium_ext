@@ -10,17 +10,16 @@ Ext.define('Orbium.view.Viewport', {
     initComponent: function() {
         this.items = [
             {
-                xtype: 'orbiumtoolbarplayer'             
+                xtype: 'orbiumtoolbarplayer'
             },
             {
-                xtype: 'orbiumtoolbarbodies'             
+                xtype: 'orbiumtoolbarbodies'
             },
-            
             {
                 xtype: 'world'
             }
         ];
 
         this.callParent();
-    }
+            }
 });

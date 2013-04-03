@@ -29,7 +29,8 @@ Ext.define('Orbium.world.World', {
 
         this.scene = new THREE.Scene();
 
-        this.renderer = new THREE.WebGLRenderer();
+//        this.renderer = new THREE.WebGLRenderer();
+        this.renderer = new THREE.CanvasRenderer();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
         container.appendChild(this.renderer.domElement);
@@ -150,7 +151,7 @@ Ext.define('Orbium.world.World', {
                 angularVelocity: {
                     x: 0,
                     y: 0,
-                    z: 0
+                    z: 10
                 }
             }
         };

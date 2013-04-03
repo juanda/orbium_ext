@@ -20,6 +20,11 @@ Ext.define('Orbium.view.ToolbarBodies', {
                 action: 'gravity',
                 text: 'gravity',
                 enableToggle: true
+            },
+            {
+                xtype: 'button',
+                action: 'chart',
+                text: 'chart',                
             }
           
         ];
