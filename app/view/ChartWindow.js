@@ -9,7 +9,7 @@ Ext.define('Orbium.view.ChartWindow', {
     constructor: function(store, limits) {
         
         this.store = store;
-        this.limits = limits;                
+        this.limits = limits;
 
         this.callParent();
 
@@ -28,15 +28,15 @@ Ext.define('Orbium.view.ChartWindow', {
                         position: 'left',
                         fields: ['velocity'],
                         minimum: 0,
-                        maximum: me.limits
+                        maximum: 100
                     },
                     {
                         title: 'Time',
                         type: 'Numeric',
                         position: 'bottom',
                         fields: ['time'],
-                        minimum: 0 ,
-                        maximum: me.limits
+                        minimum: me.limits ,
+                        maximum: me.limits + 5
                     }
                 ],
                 series: [{

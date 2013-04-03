@@ -50,10 +50,10 @@ Ext.define('Orbium.controller.Toolbar', {
         });
 
         var generateData = (function() {
-            var data = [];
+            var data = [];            
             return function() {
-                if (data.length >= 100) {
-                    data = data.slice(1, 100);
+                if(data.length >= 100){
+                    data = data.slice(1,100);
                 }
                 data.push({
                     velocity: Orbium.app.mundo.bodies[0].physics.position.x,
@@ -71,22 +71,14 @@ Ext.define('Orbium.controller.Toolbar', {
             data: generateData()
         });
 
-        var limits = 0;
-        
-        var i = 1;
+        var limits;
 
         var intr = setInterval(function() {
             var gs = generateData();
 
             store.loadData(gs);
-            limits = i++;
-            //console.log(limits);
-//                    = {
-//                max: store.max('velocity'),
-//                min: store.min('velocity'),
-//                tmax: store.max('time'),
-//                tmin: store.min('time')
-//            };
+            limits = store.max('velocity');
+            console.log(store.getCount());
         }, 100);
 
         var w = Ext.create('Orbium.view.ChartWindow', store, limits);
