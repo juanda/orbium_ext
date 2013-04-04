@@ -2,10 +2,14 @@ Ext.define('Orbium.world.World', {
     bodies: [],
     worldStatus: "STOPPED",
     cannonToThreeMultiplier: 2,
+    extend: 'Ext.util.Observable',
     constructor: function(world) {
 
         Orbium.app.consoleLog('constructor Orbium.World');
         Orbium.app.consoleLog(world);
+
+        this.callParent();
+        this.addEvents("startAnimation", "pauseAnimation", "stopAnimation");
 
         this.initScene(world);
         this.initPhysicsWorld();
@@ -53,9 +57,9 @@ Ext.define('Orbium.world.World', {
         } else {
             toolbarBodies[0].enable();
         }
-        
-        Orbium.app.consoleLog("requestAnimationId: " + this.requestAnimationId);
-        Orbium.app.consoleLog("stepnumber: " + this.physicsWorld.time);
+
+        //Orbium.app.consoleLog("requestAnimationId: " + this.requestAnimationId);
+        //Orbium.app.consoleLog("stepnumber: " + this.physicsWorld.time);
         this.renderer.render(this.scene, this.camera);
     },
     updatePhysics: function() {
@@ -93,6 +97,7 @@ Ext.define('Orbium.world.World', {
     startAnimation: function() {
         this.animate();
         this.worldStatus = "RUNNING";
+        this.fireEvent("startAnimation");
     },
     stopAnimation: function() {
         cancelAnimationFrame(this.requestAnimationId);
@@ -121,10 +126,12 @@ Ext.define('Orbium.world.World', {
 
         this.worldStatus = "STOPPED";
         this.render();
+        this.fireEvent("stopAnimation");
     },
     pauseAnimation: function() {
         cancelAnimationFrame(this.requestAnimationId);
         this.worldStatus = "PAUSED";
+        this.fireEvent("pauseAnimation");
     },
     addCube: function() {
         var parameters = {

@@ -25,7 +25,7 @@ Ext.define('Orbium.controller.Toolbar', {
     },
     onPlay: function() {
         Orbium.app.consoleLog('play clicked');
-        Orbium.app.mundo.startAnimation();
+        Orbium.app.mundo.startAnimation();        
     },
     onPause: function() {
         Orbium.app.consoleLog('pause clicked');
@@ -43,46 +43,12 @@ Ext.define('Orbium.controller.Toolbar', {
         Orbium.app.consoleLog('add sphere clicked');
         Orbium.app.mundo.addSphere();
     },
-    onChart: function() {
-        Ext.define('Velocity', {
-            extend: 'Ext.data.Model',
-            fields: ['velocity', 'time']
-        });
-
-        var generateData = (function() {
-            var data = [];            
-            return function() {
-                if(data.length >= 100){
-                    data = data.slice(1,100);
-                }
-                data.push({
-                    velocity: Orbium.app.mundo.bodies[0].physics.position.x,
-                    time: Orbium.app.mundo.physicsWorld.time
-                });
-
-                //last = data[data.length - 1];
-                return data;
-            };
-        })();
-
-
-        var store = Ext.create('Ext.data.Store', {
-            model: 'Velocity',
-            data: generateData()
-        });
-
-        var limits;
-
-        var intr = setInterval(function() {
-            var gs = generateData();
-
-            store.loadData(gs);
-            limits = store.max('velocity');
-            console.log(store.getCount());
-        }, 100);
-
-        var w = Ext.create('Orbium.view.ChartWindow', store, limits);
+    onChart: function() {             
+        var kbody = 0;
+        var w = Ext.create('Orbium.view.ChartWindow', kbody);
+        //w.startDraw();
         w.setTitle('Velocity vs time');
         w.show();
-    }
+    }               
+    
 });
