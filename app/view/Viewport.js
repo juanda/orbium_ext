@@ -3,10 +3,13 @@ Ext.define('Orbium.view.Viewport', {
     requires: [
         'Orbium.view.ToolbarBodies',
         'Orbium.view.ToolbarPlayer',
-        'Orbium.view.World'
+        'Orbium.view.World',
+        'Orbium.view.ChartWindow',
+        'Orbium.view.CubeForm'
     ],
-    alias: 'orbiumviewport',
+    alias: 'widget.orbiumviewport',
     layout: 'column',
+    id: 'kuku',
     initComponent: function() {
         this.items = [
             {
@@ -14,10 +17,14 @@ Ext.define('Orbium.view.Viewport', {
             },
             {
                 xtype: 'orbiumtoolbarbodies'
+            },   
+            {
+                xtype: 'orbiumcubeform'
             },
             {
                 xtype: 'world'
             }
+            
         ];
 
         this.callParent();

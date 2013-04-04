@@ -7,7 +7,6 @@ Ext.application({
     debug: true,
     launch: function() {
 
-
         Ext.create('Orbium.view.Viewport');
     },
     consoleLog: function(c) {
