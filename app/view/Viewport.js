@@ -18,9 +18,7 @@ Ext.define('Orbium.view.Viewport', {
             {
                 xtype: 'orbiumtoolbarbodies'
             },   
-            {
-                xtype: 'orbiumcubeform'
-            },
+            
             {
                 xtype: 'world'
             }

@@ -39,10 +39,8 @@ Ext.define('Orbium.controller.Toolbar', {
         Orbium.app.consoleLog('add cube clicked');
 //        Orbium.app.mundo.addCube();
         var cubeform = Ext.create('Orbium.view.CubeForm');
-        var viewport = Ext.getCmp('kuku');
-        console.log(viewport);
-        viewport.add(cubeform);
-        viewport.doLayout();
+        cubeform.show();
+        
     },
     onAddSphere: function() {
         Orbium.app.consoleLog('add sphere clicked');
