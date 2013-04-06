@@ -13,132 +13,235 @@ Ext.define('Orbium.view.CubeForm', {
             defaultType: 'textfield',
             bodyPadding: 10,
             items: [{
-                    xtype: 'fieldcontainer',
-                    fieldLabel: 'Initial conditions',
-                     collapsible: true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
-                        }
+                    xtype: 'fieldset',
+                    title: 'Initial position',
+                    collapsible: false,
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch',
+                        pack: 'start'
                     },
                     items: [
                         {
+                            xtype: 'label',
+                            forId: 'x',
+                            text: 'X:',
+                            margin: '10'
+                        },
+                        {
                             xtype: 'numberfield',
-                            //anchor: '100%',
                             name: 'position_x',
-                            fieldLabel: 'Position X',
-                            value: 0
+                            width: 70,
+                            value: 0,
+                            msgTarget: 'side'
+                        },
+                        {
+                            xtype: 'label',
+                            forId: 'y',
+                            text: 'Y:',
+                            margin: '10'
                         },
                         {
                             xtype: 'numberfield',
-//                    anchor: '100%',
                             name: 'position_y',
-                            fieldLabel: 'Position Y',
+                            width: 70,
                             value: 0
                         },
                         {
+                            xtype: 'label',
+                            forId: 'z',
+                            text: 'Z:',
+                            margin: '10'
+                        },
+                        {
                             xtype: 'numberfield',
-//                    anchor: '100%',
                             name: 'position_z',
-                            fieldLabel: 'Position Z',
+                            width: 70,
                             value: 0
+                        }
+                    ]
+                },
+                {
+                    xtype: 'fieldset',
+                    title: 'Initial velocity',
+                    collapsible: false,
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch',
+                        pack: 'start'
+                    },
+                    items: [
+                        {
+                            xtype: 'label',
+                            forId: 'x',
+                            text: 'X:',
+                            margin: '10'
                         },
                         {
                             xtype: 'numberfield',
-//                    anchor: '100%',
                             name: 'velocity_x',
-                            fieldLabel: 'Velocity X',
+                            width: 70,
                             value: 0
                         },
                         {
+                            xtype: 'label',
+                            forId: 'y',
+                            text: 'Y:',
+                            margin: '10'
+                        },
+                        {
                             xtype: 'numberfield',
-//                    anchor: '100%',
                             name: 'velocity_y',
-                            fieldLabel: 'Velocity Y',
+                            width: 70,
                             value: 0
                         },
                         {
+                            xtype: 'label',
+                            forId: 'z',
+                            text: 'Z:',
+                            margin: '10'
+                        },
+                        {
                             xtype: 'numberfield',
-//                    anchor: '100%',
                             name: 'velocity_z',
-                            fieldLabel: 'Position Z',
+                            width: 70,
                             value: 0
+                        }
+                    ]
+                },
+                {
+                    xtype: 'fieldset',
+                    title: 'Initial angular velocity',
+                    collapsible: false,
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch',
+                        pack: 'start'
+                    },
+                    items: [
+                        {
+                            xtype: 'label',
+                            forId: 'x',
+                            text: 'X:',
+                            margin: '10'
                         },
                         {
                             xtype: 'numberfield',
-//                    anchor: '100%',
                             name: 'angularVelocity_x',
-                            fieldLabel: 'Angular velocity X',
+                            width: 70,
                             value: 0
                         },
                         {
+                            xtype: 'label',
+                            forId: 'y',
+                            text: 'Y:',
+                            margin: '10'
+                        },
+                        {
                             xtype: 'numberfield',
-//                    anchor: '100%',
                             name: 'angularVelocity_y',
-                            fieldLabel: 'Angular velocity Y',
+                            width: 70,
                             value: 0
                         },
                         {
+                            xtype: 'label',
+                            forId: 'z',
+                            text: 'Z:',
+                            margin: '10'
+                        },
+                        {
                             xtype: 'numberfield',
-//                    anchor: '100%',
                             name: 'angularVelocity_z',
-                            fieldLabel: 'Angular velocity Z',
+                            width: 70,
                             value: 0
                         }
                     ]
                 },
                 {
-                    xtype: 'fieldcontainer',
-                    fieldLabel: 'Physics parameters',
+                    xtype: 'fieldset',
+                    title: 'Physics parameters',
+                    collapsible: false,
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch',
+                        pack: 'start'
+                    },
                     items: [
                         {
+                            xtype: 'label',
+                            forId: 'mass',
+                            text: 'Mass:',
+                            margin: '10'
+                        },
+                        {
                             xtype: 'numberfield',
-                            //anchor: '100%',
                             name: 'mass',
-                            fieldLabel: 'Mass',
-                            value: 0
+                            width: 70,
+                            value: 1
+
+                        },
+                        {
+                            xtype: 'label',
+                            forId: 'angularDamping',
+                            text: 'Angular damping:',
+                            margin: '10'
                         },
                         {
                             xtype: 'numberfield',
-                            //anchor: '100%',
                             name: 'angularDamping',
-                            fieldLabel: 'Angular damping',
+                            width: 70,
                             value: 0
                         },
                     ]
                 },
                 {
-                    xtype: 'fieldcontainer',
-                    fieldLabel: 'Geometry',
+                    xtype: 'fieldset',
+                    title: 'Geometry',
+                    collapsible: false,
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch',
+                        pack: 'start'
+                    },
                     items: [
                         {
+                            xtype: 'label',
+                            forId: 'width',
+                            text: 'Width:',
+                            margin: '10'
+                        },
+                        {
                             xtype: 'numberfield',
-                            //anchor: '100%',
                             name: 'width',
-                            fieldLabel: 'Width',
-                            value: 0
+                            width: 50,
+                            value: 1
+                        },
+                        {
+                            xtype: 'label',
+                            forId: 'height',
+                            text: 'Height:',
+                            margin: '10'
                         },
                         {
                             xtype: 'numberfield',
-                            //anchor: '100%',
                             name: 'height',
-                            fieldLabel: 'Height',
-                            value: 0
+                            width: 50,
+                            value: 1
+                        },
+                        {
+                            xtype: 'label',
+                            forId: 'depth',
+                            text: 'Depth:',
+                            margin: '10'
                         },
                         {
                             xtype: 'numberfield',
-                            //anchor: '100%',
                             name: 'depth',
-                            fieldLabel: 'Depth',
-                            value: 0
+                            width: 50,
+                            value: 1
                         }
-
                     ]
                 }
-
             ],
             buttons: [{
                     text: 'Reset',
