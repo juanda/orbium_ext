@@ -33,8 +33,8 @@ Ext.define('Orbium.world.World', {
 
         this.scene = new THREE.Scene();
 
-//        this.renderer = new THREE.WebGLRenderer();
-        this.renderer = new THREE.CanvasRenderer();
+        this.renderer = new THREE.WebGLRenderer();
+//        this.renderer = new THREE.CanvasRenderer();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
         container.appendChild(this.renderer.domElement);
@@ -133,37 +133,40 @@ Ext.define('Orbium.world.World', {
         this.worldStatus = "PAUSED";
         this.fireEvent("pauseAnimation");
     },
-    addCube: function() {
+    addCube: function(params) {
+        console.log(params);
         var parameters = {
             physicsParams: {
-                mass: 1,
-                angularDamping: 0
+                mass: parseFloat(params.mass),
+                angularDamping: parseFloat(params.angularDamping)
             },
             geometry: {
-                width: 5,
-                height: 5,
-                depth: 5
+                width: parseFloat(params.width),
+                height: parseFloat(params.height),
+                depth: parseFloat(params.depth)
             },
             initialConditions: {
                 position: {
-                    x: 0,
-                    y: -10,
-                    z: 0
+                    x: parseFloat(params.position_x),
+                    y: parseFloat(params.position_y),
+                    z: parseFloat(params.position_z)
                 },
                 velocity: {
-                    x: 10,
-                    y: 20,
-                    z: 0
+                    x: parseFloat(params.velocity_x),
+                    y: parseFloat(params.velocity_y),
+                    z: parseFloat(params.velocity_z)
                 },
                 angularVelocity: {
-                    x: 0,
-                    y: 0,
-                    z: 10
+                    x: parseFloat(params.angularVelocity_x),
+                    y: parseFloat(params.angularVelocity_y),
+                    z: parseFloat(params.angularVelocity_z)
                 }
             }
         };
 
         var body = Ext.create('Orbium.world.Cube', parameters);
+
+        console.log(body);
 
         body.addToWorld(this);
 
@@ -173,118 +176,32 @@ Ext.define('Orbium.world.World', {
         // render
         this.renderer.render(this.scene, this.camera);
     },
-    addCubeold: function() {
+    addSphere: function(params) {
 
-        var body = {};
-
+console.log(params);
         var parameters = {
             physicsParams: {
-                mass: 1,
-                angularDamping: 0
+                mass: parseFloat(params.mass),
+                angularDamping: parseFloat(params.angularDamping)
             },
             geometry: {
-                width: 2,
-                height: 2,
-                depth: 2
+                radius: parseFloat(params.radius)
             },
             initialConditions: {
                 position: {
-                    x: 0,
-                    y: 0,
-                    z: 0
+                    x: parseFloat(params.position_x),
+                    y: parseFloat(params.position_y),
+                    z: parseFloat(params.position_z)
                 },
                 velocity: {
-                    x: 10,
-                    y: 10,
-                    z: 0
+                    x: parseFloat(params.velocity_x),
+                    y: parseFloat(params.velocity_y),
+                    z: parseFloat(params.velocity_z)
                 },
                 angularVelocity: {
-                    x: 10,
-                    y: 10,
-                    z: 10
-                }
-            }
-
-        };
-
-        body.parameters = parameters;
-
-        var m = this.cannonToThreeMultiplier;
-
-        // Create the physics part of the body object
-        var shape = new CANNON.Box(
-                new CANNON.Vec3(body.parameters.geometry.width / m,
-                body.parameters.geometry.height / m,
-                body.parameters.geometry.depth / m)
-                );
-        var mass = body.parameters.physicsParams.mass;
-        body.physics = new CANNON.RigidBody(mass, shape);
-
-        body.physics.position.x = body.parameters.initialConditions.position.x;
-        body.physics.position.y = body.parameters.initialConditions.position.y;
-        body.physics.position.z = body.parameters.initialConditions.position.z;
-
-        body.physics.velocity.x = body.parameters.initialConditions.velocity.x;
-        body.physics.velocity.y = body.parameters.initialConditions.velocity.y;
-        body.physics.velocity.z = body.parameters.initialConditions.velocity.z;
-
-        body.physics.angularVelocity.set(
-                body.parameters.initialConditions.angularVelocity.x,
-                body.parameters.initialConditions.angularVelocity.y,
-                body.parameters.initialConditions.angularVelocity.z
-                );
-        body.physics.angularDamping = body.parameters.physicsParams.angularDamping;
-
-        this.physicsWorld.add(body.physics);
-
-        // Create de visual (mesh) part of the phisical body
-        var geometry = new THREE.CubeGeometry(
-                body.parameters.geometry.width,
-                body.parameters.geometry.width,
-                body.parameters.geometry.width
-                );
-        var material = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe: true});
-
-        body.mesh = new THREE.Mesh(geometry, material);
-        body.mesh.useQuaternion = true;
-
-        // Add to viewew scene
-        this.scene.add(body.mesh);
-
-        body.physics.position.copy(body.mesh.position);
-
-
-
-        // Add to bodies collection
-        this.bodies.push(body);
-
-        // render
-        this.renderer.render(this.scene, this.camera);
-    },
-    addSphere: function() {
-        var parameters = {
-            physicsParams: {
-                mass: 1,
-                angularDamping: 0
-            },
-            geometry: {
-                radius: 10,
-            },
-            initialConditions: {
-                position: {
-                    x: 0,
-                    y: 30,
-                    z: -30
-                },
-                velocity: {
-                    x: -10,
-                    y: 20,
-                    z: 0
-                },
-                angularVelocity: {
-                    x: 0,
-                    y: 0,
-                    z: 10
+                    x: parseFloat(params.angularVelocity_x),
+                    y: parseFloat(params.angularVelocity_y),
+                    z: parseFloat(params.angularVelocity_z)
                 }
             }
         };

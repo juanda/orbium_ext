@@ -1,12 +1,12 @@
-Ext.define('Orbium.view.CubeForm', {
+Ext.define('Orbium.view.SphereForm', {
     extend: 'Ext.window.Window',
-    alias: 'widget.orbiumcubeform',
+    alias: 'widget.orbiumsphereform',
     width: 400,
     height: 400,
     minimizable: false,
     animCollapse: true,
     layout: 'fit',
-    title: 'Add new cube',
+    title: 'Add new sphere',
     initComponent: function() {
 
         var cubeForm = Ext.create('Ext.form.Panel', {
@@ -210,40 +210,19 @@ Ext.define('Orbium.view.CubeForm', {
                     items: [
                         {
                             xtype: 'label',
-                            forId: 'width',
-                            text: 'Width:',
+                            forId: 'radius',
+                            text: 'Radius:',
                             margin: '10'
                         },
                         {
                             xtype: 'numberfield',
-                            name: 'width',
+                            name: 'radius',
                             width: 50,
-                            value: 1
-                        },
-                        {
-                            xtype: 'label',
-                            forId: 'height',
-                            text: 'Height:',
-                            margin: '10'
-                        },
-                        {
-                            xtype: 'numberfield',
-                            name: 'height',
-                            width: 50,
-                            value: 1
-                        },
-                        {
-                            xtype: 'label',
-                            forId: 'depth',
-                            text: 'Depth:',
-                            margin: '10'
-                        },
-                        {
-                            xtype: 'numberfield',
-                            name: 'depth',
-                            width: 50,
-                            value: 1
+                            value: 1,
+                            minValue: 0.1,
+                            msgTarget: 'under'
                         }
+                        
                     ]
                 }
             ],
@@ -260,7 +239,7 @@ Ext.define('Orbium.view.CubeForm', {
                         var form = this.up('form').getForm();
                         if (form.isValid()) {
 
-                            Orbium.app.mundo.addCube(form.getValues());
+                            Orbium.app.mundo.addSphere(form.getValues());
                             this.up('window').close();
 //                            form.submit({
 //                                success: function(form, action) {

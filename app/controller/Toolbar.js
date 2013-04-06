@@ -37,14 +37,15 @@ Ext.define('Orbium.controller.Toolbar', {
     },
     onAddCube: function() {
         Orbium.app.consoleLog('add cube clicked');
-//        Orbium.app.mundo.addCube();
         var cubeform = Ext.create('Orbium.view.CubeForm');
         cubeform.show();
         
     },
     onAddSphere: function() {
         Orbium.app.consoleLog('add sphere clicked');
-        Orbium.app.mundo.addSphere();
+       
+        var sphereform = Ext.create('Orbium.view.SphereForm');
+        sphereform.show();
     },
     onChart: function() {             
         var kbody = 0;
