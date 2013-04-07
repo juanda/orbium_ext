@@ -11,6 +11,8 @@ Ext.define('Orbium.world.World', {
         this.callParent();
         this.addEvents("startAnimation", "pauseAnimation", "stopAnimation");
 
+        this.INTERSECTED = null;
+
         this.initScene(world);
         this.initPhysicsWorld();
 
@@ -27,7 +29,9 @@ Ext.define('Orbium.world.World', {
         this.veloCamara = (config.veloCamara || 1);
 
         var container = world.getViewer();
-
+        
+        this.world = world;
+        
         this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
         this.camera.position.z = 30;
 
@@ -57,6 +61,38 @@ Ext.define('Orbium.world.World', {
         } else {
             toolbarBodies[0].enable();
         }
+
+        // find intersections
+        console.log('kaka'+this.world.mouseX);
+//        var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
+//
+//        projector.unprojectVector(vector, this.camera);
+//
+//        var raycaster = new THREE.Raycaster(this.camera.position, vector.sub(this.camera.position).normalize());
+//
+//        var intersects = raycaster.intersectObjects(this.scene.children);
+//
+//        if (intersects.length > 0) {
+//
+//            if (INTERSECTED != intersects[ 0 ].object) {
+//
+//                if (INTERSECTED)
+//                    INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+//
+//                INTERSECTED = intersects[ 0 ].object;
+//                INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+//                INTERSECTED.material.emissive.setHex(0xff0000);
+//
+//            }
+//
+//        } else {
+//
+//            if (INTERSECTED)
+//                INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+//
+//            INTERSECTED = null;
+//
+//        }
 
         //Orbium.app.consoleLog("requestAnimationId: " + this.requestAnimationId);
         //Orbium.app.consoleLog("stepnumber: " + this.physicsWorld.time);
@@ -178,7 +214,7 @@ Ext.define('Orbium.world.World', {
     },
     addSphere: function(params) {
 
-console.log(params);
+        console.log(params);
         var parameters = {
             physicsParams: {
                 mass: parseFloat(params.mass),

@@ -6,6 +6,7 @@ Ext.define('Orbium.view.BodyForm', {
     minimizable: false,
     animCollapse: true,
     layout: 'fit',
+    modal: true,
     constructor: function() {
 
         this.formItems = [{

@@ -9,7 +9,6 @@ Ext.define('Orbium.view.Viewport', {
     ],
     alias: 'widget.orbiumviewport',
     layout: 'column',
-    id: 'kuku',
     initComponent: function() {
         this.items = [
             {
@@ -17,14 +16,13 @@ Ext.define('Orbium.view.Viewport', {
             },
             {
                 xtype: 'orbiumtoolbarbodies'
-            },   
-            
+            },
             {
                 xtype: 'world'
             }
-            
+
         ];
 
         this.callParent();
-            }
+    }
 });
