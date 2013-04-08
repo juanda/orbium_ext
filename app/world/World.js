@@ -25,20 +25,26 @@ Ext.define('Orbium.world.World', {
         this.physicsWorld.solver.iterations = 10;
     },
     initScene: function(world) {
+
+        var me = this;
+
+        this.projector = new THREE.Projector();
+        this.INTERSECTED = null;
+
         var config = {veloCamara: 1};
         this.veloCamara = (config.veloCamara || 1);
 
         var container = world.getViewer();
-        
+
         this.world = world;
-        
+
         this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
         this.camera.position.z = 30;
 
         this.scene = new THREE.Scene();
 
-        this.renderer = new THREE.WebGLRenderer();
-//        this.renderer = new THREE.CanvasRenderer();
+//        this.renderer = new THREE.WebGLRenderer();
+        this.renderer = new THREE.CanvasRenderer();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
         container.appendChild(this.renderer.domElement);
@@ -51,6 +57,13 @@ Ext.define('Orbium.world.World', {
             container.appendChild(this.stats.domElement);
         }
 
+        world.getEl().on({
+            click: me.selectBody,
+           
+            scope: this // Important. Ensure "this" is correct during handler execution
+        });
+        Ext.EventManager.onWindowResize(this.onWindowResize,this);
+
         this.renderer.render(this.scene, this.camera);
     },
     render: function() {
@@ -61,38 +74,6 @@ Ext.define('Orbium.world.World', {
         } else {
             toolbarBodies[0].enable();
         }
-
-        // find intersections
-        console.log('kaka'+this.world.mouseX);
-//        var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
-//
-//        projector.unprojectVector(vector, this.camera);
-//
-//        var raycaster = new THREE.Raycaster(this.camera.position, vector.sub(this.camera.position).normalize());
-//
-//        var intersects = raycaster.intersectObjects(this.scene.children);
-//
-//        if (intersects.length > 0) {
-//
-//            if (INTERSECTED != intersects[ 0 ].object) {
-//
-//                if (INTERSECTED)
-//                    INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
-//
-//                INTERSECTED = intersects[ 0 ].object;
-//                INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-//                INTERSECTED.material.emissive.setHex(0xff0000);
-//
-//            }
-//
-//        } else {
-//
-//            if (INTERSECTED)
-//                INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
-//
-//            INTERSECTED = null;
-//
-//        }
 
         //Orbium.app.consoleLog("requestAnimationId: " + this.requestAnimationId);
         //Orbium.app.consoleLog("stepnumber: " + this.physicsWorld.time);
@@ -321,7 +302,62 @@ Ext.define('Orbium.world.World', {
 
         // render
         this.renderer.render(this.scene, this.camera);
+    },
+    selectBody: function(e) {
+
+        mouse = {
+            x: (e.browserEvent.clientX / window.innerWidth) * 2 - 1,
+            y: -(e.browserEvent.clientY / window.innerHeight) * 2 + 1
+        };
+
+        var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
+
+        console.log(vector);
+
+        this.projector.unprojectVector(vector, this.camera);
+        console.log(vector);
+
+        var raycaster = new THREE.Raycaster(this.camera.position, vector.sub(this.camera.position).normalize());
+
+        var intersects = raycaster.intersectObjects(this.scene.children);
+
+        console.log(this.scene.children);
+        console.log(intersects);
+
+        if (intersects.length > 0) {
+
+            console.log('Te pillé');
+
+//            if (this.INTERSECTED != intersects[ 0 ].object) {
+//
+//                if (this.INTERSECTED)
+//                    this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex);
+//
+//                this.INTERSECTED = intersects[ 0 ].object;
+//                this.INTERSECTED.currentHex = this.INTERSECTED.material.emissive.getHex();
+//                this.INTERSECTED.material.emissive.setHex(0xff0000);
+
+//            }
+
+        } else {
+
+            if (this.INTERSECTED)
+                this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex);
+
+            this.INTERSECTED = null;
+
+        }
+    },
+    onWindowResize: function() {
+       
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        
+        this.renderer.render(this.scene, this.camera);
+
     }
-})
+});
 
 
