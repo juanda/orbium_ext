@@ -35,12 +35,7 @@ Ext.define('Orbium.world.World', {
         this.veloCamara = (config.veloCamara || 1);
 
         var container = world.getViewer();
-
-        this.world = world;
-
-        this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
-        this.camera.position.z = 30;
-
+        
         this.scene = new THREE.Scene();
 
 //        this.renderer = new THREE.WebGLRenderer();
@@ -48,6 +43,9 @@ Ext.define('Orbium.world.World', {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
         container.appendChild(this.renderer.domElement);
+        
+        this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
+        this.camera.position.z = 30;
 
         // To monitor performance (fps)
         if (Orbium.app.debug) {
@@ -59,10 +57,9 @@ Ext.define('Orbium.world.World', {
 
         world.getEl().on({
             click: me.selectBody,
-           
             scope: this // Important. Ensure "this" is correct during handler execution
         });
-        Ext.EventManager.onWindowResize(this.onWindowResize,this);
+        Ext.EventManager.onWindowResize(this.onWindowResize, this);
 
         this.renderer.render(this.scene, this.camera);
     },
@@ -233,96 +230,29 @@ Ext.define('Orbium.world.World', {
         // render
         this.renderer.render(this.scene, this.camera);
     },
-    addBall2: function() {
-
-        var body = {};
-
-        var config = {
-            physicsParams: {
-                mass: 1,
-                angularDamping: 0
-            },
-            geometry: {
-                radius: 1
-            },
-            initialConditions: {
-                position: {
-                    x: 0,
-                    y: 10,
-                    z: 0
-                },
-                velocity: {
-                    x: -25,
-                    y: 0,
-                    z: 0
-                },
-                angularVelocity: {
-                    x: 10,
-                    y: 10,
-                    z: 10
-                }
-            }
-
-        };
-
-        body.parameters = config;
-
-        var m = this.cannonToThreeMultiplier;
-
-        var shape = new CANNON.Sphere(body.parameters.geometry.radius / m);
-
-        // Shape on plane       
-        body.physics = new CANNON.RigidBody(body.parameters.physicsParams.mass, shape);
-
-        body.physics.position.x = body.parameters.initialConditions.position.x;
-        body.physics.position.y = body.parameters.initialConditions.position.y;
-        body.physics.position.z = body.parameters.initialConditions.position.z;
-
-        body.physics.velocity.x = body.parameters.initialConditions.velocity.x;
-        body.physics.velocity.y = body.parameters.initialConditions.velocity.y;
-        body.physics.velocity.z = body.parameters.initialConditions.velocity.z;
-
-        this.physicsWorld.add(body.physics);
-
-        var geometry = new THREE.SphereGeometry(body.parameters.geometry.radius, 20, 20);
-
-        var material = new THREE.MeshBasicMaterial({color: 0xff0000});
-
-        body.mesh = new THREE.Mesh(geometry, material);
-        body.mesh.useQuaternion = true;
-
-        body.physics.position.copy(body.mesh.position);
-
-
-        // Add to viewew scene
-        this.scene.add(body.mesh);
-
-        // Add to bodies collection
-        this.bodies.push(body);
-
-        // render
-        this.renderer.render(this.scene, this.camera);
-    },
     selectBody: function(e) {
 
+        // e.browserEvent.clientX goes from 0 to window.innerWidth and
+        // e.browserEvent.clientY goes from 0 to window.innerHeight, so
+        // mouse.x goes from -1 to 1 and the same for mouse.y
         mouse = {
             x: (e.browserEvent.clientX / window.innerWidth) * 2 - 1,
             y: -(e.browserEvent.clientY / window.innerHeight) * 2 + 1
         };
 
-        var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
+//        var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
 
-        console.log(vector);
+        console.log("mouse: " + mouse.x + "," + mouse.y);
+        console.log("client: " + e.browserEvent.clientX + "," + e.browserEvent.clientY);
+        console.log(window.innerWidth + "," + window.innerHeight);
 
+
+        var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
         this.projector.unprojectVector(vector, this.camera);
-        console.log(vector);
 
         var raycaster = new THREE.Raycaster(this.camera.position, vector.sub(this.camera.position).normalize());
-
-        var intersects = raycaster.intersectObjects(this.scene.children);
-
-        console.log(this.scene.children);
-        console.log(intersects);
+        
+        var intersects = raycaster.intersectObjects( this.scene.children );
 
         if (intersects.length > 0) {
 
@@ -349,12 +279,12 @@ Ext.define('Orbium.world.World', {
         }
     },
     onWindowResize: function() {
-       
+
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
 
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        
+
         this.renderer.render(this.scene, this.camera);
 
     }
