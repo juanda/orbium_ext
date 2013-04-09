@@ -4,8 +4,8 @@ Ext.define('Orbium.controller.World', {
 
         this.control({
             'world': {
-                render: this.onWorldRendered,                
-            }            
+                render: this.onWorldRendered                
+            }
         });
     },
     requires: ['Orbium.world.World', 'Orbium.world.Cube', 'Orbium.world.Sphere'],
@@ -16,7 +16,7 @@ Ext.define('Orbium.controller.World', {
         //Orbium.app.consoleLog(worlds);
         var world = worlds[0];
         //Orbium.app.consoleLog(world.getViewer());
-        
+
         // Creacion del mundo
         Orbium.app.mundo = Ext.create('Orbium.world.World', world);
     }

@@ -6,9 +6,6 @@ Ext.define('Orbium.view.World', {
         Orbium.app.consoleLog('initComponent de Orbium.view.World');
     
         this.callParent();
-    },
-    getViewer: function() {
-        return Ext.get('viewer').dom;
     }
 
 });

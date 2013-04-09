@@ -9,9 +9,11 @@ Ext.define('Orbium.world.World', {
         Orbium.app.consoleLog(world);
 
         this.callParent();
+        
+        // These events aren't use yet
         this.addEvents("startAnimation", "pauseAnimation", "stopAnimation");
 
-        this.INTERSECTED = null;
+        this.INTERSECTED = null;               
 
         this.initScene(world);
         this.initPhysicsWorld();
@@ -27,17 +29,20 @@ Ext.define('Orbium.world.World', {
     initScene: function(world) {
 
         var me = this;
-
+        
+        // Needed to compute intersections and select object by picking with 
+        // the mouse
         this.projector = new THREE.Projector();
         this.INTERSECTED = null;
 
-        var config = {veloCamara: 1};
-        this.veloCamara = (config.veloCamara || 1);
-
-        var container = world.getViewer();
         
+        // Get the DOM Element of the world
+        var container = world.getEl();
+                
+        // Create the THREE scene
         this.scene = new THREE.Scene();
 
+        // Create the renderer
 //        this.renderer = new THREE.WebGLRenderer();
         this.renderer = new THREE.CanvasRenderer();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -54,12 +59,15 @@ Ext.define('Orbium.world.World', {
             this.stats.domElement.style.top = '30px';
             container.appendChild(this.stats.domElement);
         }
-
-        world.getEl().on({
-            click: me.selectBody,
-            scope: this // Important. Ensure "this" is correct during handler execution
+        
+        container.on({            
+            click: me.selectBody,            
+            scope: this// Important. Ensure "this" is correct during handler execution
+            
         });
         Ext.EventManager.onWindowResize(this.onWindowResize, this);
+        window.addEventListener( "keypress", function(){var cubeform = Ext.create('Orbium.view.CubeForm');
+        cubeform.show();}, false )
 
         this.renderer.render(this.scene, this.camera);
     },
@@ -235,17 +243,13 @@ Ext.define('Orbium.world.World', {
         // e.browserEvent.clientX goes from 0 to window.innerWidth and
         // e.browserEvent.clientY goes from 0 to window.innerHeight, so
         // mouse.x goes from -1 to 1 and the same for mouse.y
+        // The mouse position must be corrected by the canvas offset due
+        // to other dom elements (like the toolbar). The correction are
+        // this.renderer.domElement.offsetLeft and this.renderer.domElement.offsetTop
         mouse = {
-            x: (e.browserEvent.clientX / window.innerWidth) * 2 - 1,
-            y: -(e.browserEvent.clientY / window.innerHeight) * 2 + 1
+            x: ((e.browserEvent.clientX - this.renderer.domElement.offsetLeft) / window.innerWidth) * 2 - 1,
+            y: -((e.browserEvent.clientY - this.renderer.domElement.offsetTop) / window.innerHeight) * 2 + 1
         };
-
-//        var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
-
-        console.log("mouse: " + mouse.x + "," + mouse.y);
-        console.log("client: " + e.browserEvent.clientX + "," + e.browserEvent.clientY);
-        console.log(window.innerWidth + "," + window.innerHeight);
-
 
         var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
         this.projector.unprojectVector(vector, this.camera);
