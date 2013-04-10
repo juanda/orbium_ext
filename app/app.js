@@ -6,7 +6,7 @@ Ext.application({
     controllers: ['Toolbar', 'World'],
     debug: true,
     launch: function() {
-
+        Ext.getBody().on("contextmenu", Ext.emptyFn, null, {preventDefault: true});
         Ext.create('Orbium.view.Viewport');
     },
     consoleLog: function(c) {

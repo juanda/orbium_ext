@@ -9,11 +9,12 @@ Ext.define('Orbium.world.World', {
         Orbium.app.consoleLog(world);
 
         this.callParent();
-        
+
         // These events aren't use yet
         this.addEvents("startAnimation", "pauseAnimation", "stopAnimation");
 
-        this.INTERSECTED = null;               
+        this.intersected = null;
+        this.itemsSelected = [];
 
         this.initScene(world);
         this.initPhysicsWorld();
@@ -29,16 +30,16 @@ Ext.define('Orbium.world.World', {
     initScene: function(world) {
 
         var me = this;
-        
+
         // Needed to compute intersections and select object by picking with 
         // the mouse
         this.projector = new THREE.Projector();
-        this.INTERSECTED = null;
+        this.intersected = null;
 
-        
+
         // Get the DOM Element of the world
         var container = world.getEl();
-                
+
         // Create the THREE scene
         this.scene = new THREE.Scene();
 
@@ -48,7 +49,7 @@ Ext.define('Orbium.world.World', {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
         container.appendChild(this.renderer.domElement);
-        
+
         this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
         this.camera.position.z = 30;
 
@@ -59,15 +60,18 @@ Ext.define('Orbium.world.World', {
             this.stats.domElement.style.top = '30px';
             container.appendChild(this.stats.domElement);
         }
-        
-        container.on({            
-            click: me.selectBody,            
+
+        container.on({
+            click: me.selectBody,
+            contextmenu: me.showBodyContexMenu,
             scope: this// Important. Ensure "this" is correct during handler execution
-            
+
         });
         Ext.EventManager.onWindowResize(this.onWindowResize, this);
-        window.addEventListener( "keypress", function(){var cubeform = Ext.create('Orbium.view.CubeForm');
-        cubeform.show();}, false )
+        window.addEventListener("keypress", function() {
+            var cubeform = Ext.create('Orbium.view.CubeForm');
+            cubeform.show();
+        }, false)
 
         this.renderer.render(this.scene, this.camera);
     },
@@ -255,32 +259,52 @@ Ext.define('Orbium.world.World', {
         this.projector.unprojectVector(vector, this.camera);
 
         var raycaster = new THREE.Raycaster(this.camera.position, vector.sub(this.camera.position).normalize());
-        
-        var intersects = raycaster.intersectObjects( this.scene.children );
+
+        var intersects = raycaster.intersectObjects(this.scene.children);
 
         if (intersects.length > 0) {
 
-            console.log('Te pillé');
+            var intersected = intersects[ 0 ].object;
+                        
+            
+            for(var k in this.itemsSelected){
+                this.itemsSelected[k].material.color.setHex(0xff0000);                
+            } 
+            
+            for(var k in this.itemsSelected){
+                this.itemsSelected.pop();                
+            } 
+            
+            this.itemsSelected.push(intersected);
+            for(var k in this.itemsSelected){
+                this.itemsSelected[k].material.color.setHex(0xffaacc);
+            }
+                        
+            this.renderer.render(this.scene, this.camera);
 
-//            if (this.INTERSECTED != intersects[ 0 ].object) {
+//            if (this.intersected != intersects[ 0 ].object) {
 //
-//                if (this.INTERSECTED)
-//                    this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex);
+//                if (this.intersected)
+//                    this.intersected.material.emissive.setHex(this.intersected.currentHex);
 //
-//                this.INTERSECTED = intersects[ 0 ].object;
-//                this.INTERSECTED.currentHex = this.INTERSECTED.material.emissive.getHex();
-//                this.INTERSECTED.material.emissive.setHex(0xff0000);
+//                this.intersected = intersects[ 0 ].object;
+//                this.intersected.currentHex = this.intersected.material.emissive.getHex();
+//                this.intersected.material.emissive.setHex(0xff0000);
 
 //            }
 
         } else {
 
-            if (this.INTERSECTED)
-                this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex);
-
-            this.INTERSECTED = null;
+            this.intersected = null;
 
         }
+    },
+    showBodyContexMenu: function(e) {
+        
+        var menu = Ext.create('Orbium.view.BodyMenu');
+        menu.x = e.browserEvent.clientX;
+        menu.y = e.browserEvent.clientY;
+        menu.show();
     },
     onWindowResize: function() {
 

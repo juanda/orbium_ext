@@ -3,9 +3,7 @@ Ext.define('Orbium.view.Viewport', {
     requires: [
         'Orbium.view.ToolbarBodies',
         'Orbium.view.ToolbarPlayer',
-        'Orbium.view.World',
-        'Orbium.view.ChartWindow',
-        'Orbium.view.CubeForm'
+        'Orbium.view.World'        
     ],
     alias: 'widget.orbiumviewport',
     layout: 'column',
