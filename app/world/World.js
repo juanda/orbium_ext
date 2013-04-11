@@ -265,21 +265,30 @@ Ext.define('Orbium.world.World', {
         if (intersects.length > 0) {
 
             var intersected = intersects[ 0 ].object;
-                        
-            
-            for(var k in this.itemsSelected){
-                this.itemsSelected[k].material.color.setHex(0xff0000);                
-            } 
-            
-            for(var k in this.itemsSelected){
-                this.itemsSelected.pop();                
-            } 
-            
-            this.itemsSelected.push(intersected);
-            for(var k in this.itemsSelected){
-                this.itemsSelected[k].material.color.setHex(0xffaacc);
+
+            // Revert color to old selected bodies
+            for (var k in this.itemsSelected) {
+                this.itemsSelected[k].material.color.setHex(0xff0000);
             }
-                        
+
+            // Drop objects from selected array
+            for (var k in this.itemsSelected) {
+                if (intersected.id !== this.itemsSelected[k]) {
+                    this.itemsSelected.pop();
+                }
+            }
+
+            // add the new intersected body to the selected array and 
+            // change its color
+            this.itemsSelected.push(intersected);
+            for (var k in this.itemsSelected) {
+
+                this.itemsSelected[k].material.color.setHex(0x000000);
+
+                this.itemsSelected[k].mouseX = e.browserEvent.clientX;
+                this.itemsSelected[k].mouseY = e.browserEvent.clientY;
+            }
+
             this.renderer.render(this.scene, this.camera);
 
 //            if (this.intersected != intersects[ 0 ].object) {
@@ -300,10 +309,13 @@ Ext.define('Orbium.world.World', {
         }
     },
     showBodyContexMenu: function(e) {
-        
+        console.log(this.itemsSelected);
+        if (this.itemsSelected.length === 0)
+            return;
+
         var menu = Ext.create('Orbium.view.BodyMenu');
-        menu.x = e.browserEvent.clientX;
-        menu.y = e.browserEvent.clientY;
+        menu.x = this.itemsSelected[0].mouseX;
+        menu.y = this.itemsSelected[0].mouseY;
         menu.show();
     },
     onWindowResize: function() {
