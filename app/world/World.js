@@ -14,7 +14,7 @@ Ext.define('Orbium.world.World', {
         this.addEvents("startAnimation", "pauseAnimation", "stopAnimation");
 
         this.intersected = null;
-        this.itemsSelected = [];
+        this.itemSelected = null;
 
         this.initScene(world);
         this.initPhysicsWorld();
@@ -34,7 +34,6 @@ Ext.define('Orbium.world.World', {
         // Needed to compute intersections and select object by picking with 
         // the mouse
         this.projector = new THREE.Projector();
-        this.intersected = null;
 
 
         // Get the DOM Element of the world
@@ -266,28 +265,27 @@ Ext.define('Orbium.world.World', {
 
             var intersected = intersects[ 0 ].object;
 
-            // Revert color to old selected bodies
-            for (var k in this.itemsSelected) {
-                this.itemsSelected[k].material.color.setHex(0xff0000);
+            // Revert color to old selected body
+
+            console.log(this.itemSelected);
+            console.log(intersected);
+            if (this.itemSelected) {
+                this.itemSelected.material.color.setHex(0xff0000);
+            }
+            if (this.itemSelected && intersected.id !== this.itemSelected.id
+                    || !this.itemSelected) {
+                this.itemSelected = intersected;
+                this.itemSelected.material.color.setHex(0x000000);
+
+                this.itemSelected.mouseX = e.browserEvent.clientX;
+                this.itemSelected.mouseY = e.browserEvent.clientY;
+            } else {
+                this.itemSelected = null;
             }
 
-            // Drop objects from selected array
-            for (var k in this.itemsSelected) {
-                if (intersected.id !== this.itemsSelected[k]) {
-                    this.itemsSelected.pop();
-                }
-            }
 
-            // add the new intersected body to the selected array and 
-            // change its color
-            this.itemsSelected.push(intersected);
-            for (var k in this.itemsSelected) {
 
-                this.itemsSelected[k].material.color.setHex(0x000000);
 
-                this.itemsSelected[k].mouseX = e.browserEvent.clientX;
-                this.itemsSelected[k].mouseY = e.browserEvent.clientY;
-            }
 
             this.renderer.render(this.scene, this.camera);
 
@@ -309,13 +307,13 @@ Ext.define('Orbium.world.World', {
         }
     },
     showBodyContexMenu: function(e) {
-        console.log(this.itemsSelected);
-        if (this.itemsSelected.length === 0)
+        
+        if (!this.itemSelected)
             return;
 
         var menu = Ext.create('Orbium.view.BodyMenu');
-        menu.x = this.itemsSelected[0].mouseX;
-        menu.y = this.itemsSelected[0].mouseY;
+        menu.x = this.itemSelected.mouseX;
+        menu.y = this.itemSelected.mouseY;
         menu.show();
     },
     onWindowResize: function() {

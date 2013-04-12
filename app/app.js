@@ -3,7 +3,7 @@ Ext.application({
     requires: ['Orbium.view.Viewport', 'Ext.ComponentQuery'],
     name: 'Orbium',
     appFolder: 'app',
-    controllers: ['Toolbar', 'World'],
+    controllers: ['Toolbar', 'BodyMenu', 'World'],
     debug: true,
     launch: function() {
         Ext.getBody().on("contextmenu", Ext.emptyFn, null, {preventDefault: true});

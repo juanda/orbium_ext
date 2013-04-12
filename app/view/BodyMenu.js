@@ -1,16 +1,18 @@
 Ext.define('Orbium.view.BodyMenu', {
     extend: 'Ext.menu.Menu',
-    width: 100,
-    margin: '0 0 10 0',
-    floating: true, 
+    alias: 'widget.orbiumbodymenu',
+    width: 150,
+    plain: true,
+    floating: true,
 //    renderTo: Ext.getBody(), // usually rendered by it's containing component
     items: [{
-            text: 'regular item 1'
+            text: 'change properties',
+            id: 'change_properties'
         }, {
-            text: 'regular item 2'
-        }, {
-            text: 'regular item 3'
+            text: 'display graph',
+            id: 'display_graph'
         }]
+
 });
 
 
