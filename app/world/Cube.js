@@ -1,33 +1,6 @@
 Ext.define('Orbium.world.Cube', {
     extend: 'Orbium.world.BaseBody',
-    constructor: function(params) {
-
-        var defaultParams = {
-            initialConditions: {
-                angularVelocity: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                }
-            },
-            physicsParams: {
-                angularDamping: 0,
-            },
-            geometry: {
-                width: 1,
-                height: 1,
-                depth: 1
-            }
-        };
-        this.parameters = {};
-        Ext.Object.merge(this.parameters, defaultParams);
-        
-        // Commons parameters
-        this.callParent([params]);       
-
-        this.initialize();
-
-    },
+    
     initPhysics: function() {
         var m = this.cannonToThreeMultiplier;
         var shape = new CANNON.Box(

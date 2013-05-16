@@ -201,8 +201,7 @@ Ext.define('Orbium.view.BodyForm', {
         this.callParent();
     },
     initComponent: function() {
-        var me = this;
-        console.log(this.formItems);
+        var me = this;       
         var cubeForm = Ext.create('Ext.form.Panel', {
             defaultType: 'textfield',
             bodyPadding: 10,
@@ -219,8 +218,7 @@ Ext.define('Orbium.view.BodyForm', {
                     handler: function() {
                         
                         var form = this.up('form').getForm();
-                        if (form.isValid()) {
-                            console.log(typeof me);
+                        if (form.isValid()) {                            
                             switch (me.bodyType) {
                                 case 'cube':
                                     Orbium.app.mundo.addCube(form.getValues());

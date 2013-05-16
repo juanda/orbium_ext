@@ -15,6 +15,7 @@ Ext.define('Orbium.world.World', {
 
         this.intersected = null;
         this.itemSelected = null;
+        this.bodyMenu = Ext.create('Orbium.view.BodyMenu');
 
         this.initScene(world);
         this.initPhysicsWorld();
@@ -67,10 +68,10 @@ Ext.define('Orbium.world.World', {
 
         });
         Ext.EventManager.onWindowResize(this.onWindowResize, this);
-        window.addEventListener("keypress", function() {
-            var cubeform = Ext.create('Orbium.view.CubeForm');
-            cubeform.show();
-        }, false)
+//        window.addEventListener("keypress", function() {
+//            var cubeform = Ext.create('Orbium.view.CubeForm');
+//            cubeform.show();
+//        }, false);
 
         this.renderer.render(this.scene, this.camera);
     },
@@ -110,13 +111,13 @@ Ext.define('Orbium.world.World', {
         }
 
         // deltaCamera tunning to get a camera constant velocity
-        var time;
-        var now = new Date().getTime();
-
-        this.repeat = now - (time || now);
-        time = now;
-
-        this.deltaCamera = this.veloCamara * this.repeat / 10;
+//        var time;
+//        var now = new Date().getTime();
+//
+//        this.repeat = now - (time || now);
+//        time = now;
+//
+//        this.deltaCamera = this.veloCamara * this.repeat / 10;
 
     },
     startAnimation: function() {
@@ -159,7 +160,7 @@ Ext.define('Orbium.world.World', {
         this.fireEvent("pauseAnimation");
     },
     addCube: function(params) {
-        console.log(params);
+       
         var parameters = {
             physicsParams: {
                 mass: parseFloat(params.mass),
@@ -185,13 +186,12 @@ Ext.define('Orbium.world.World', {
                     x: parseFloat(params.angularVelocity_x),
                     y: parseFloat(params.angularVelocity_y),
                     z: parseFloat(params.angularVelocity_z)
-                }
+            }
             }
         };
 
         var body = Ext.create('Orbium.world.Cube', parameters);
 
-        console.log(body);
 
         body.addToWorld(this);
 
@@ -266,9 +266,7 @@ Ext.define('Orbium.world.World', {
             var intersected = intersects[ 0 ].object;
 
             // Revert color to old selected body
-
-            console.log(this.itemSelected);
-            console.log(intersected);
+            
             if (this.itemSelected) {
                 this.itemSelected.material.color.setHex(0xff0000);
             }
@@ -310,11 +308,13 @@ Ext.define('Orbium.world.World', {
         
         if (!this.itemSelected)
             return;
-
-        var menu = Ext.create('Orbium.view.BodyMenu');
-        menu.x = this.itemSelected.mouseX;
-        menu.y = this.itemSelected.mouseY;
-        menu.show();
+        
+        console.log(this.itemSelected.mouseX);
+        console.log(this.itemSelected.mouseY);
+        console.log(this.bodyMenu);
+            
+        this.bodyMenu.setPagePosition(this.itemSelected.mouseX, this.itemSelected.mouseY);
+        this.bodyMenu.show();
     },
     onWindowResize: function() {
 

@@ -4,7 +4,7 @@ Ext.define('Orbium.view.BodyMenu', {
     width: 150,
     plain: true,
     floating: true,
-//    renderTo: Ext.getBody(), // usually rendered by it's containing component
+    renderTo: Ext.getBody(), // usually rendered by it's containing component
     items: [{
             text: 'change properties',
             id: 'change_properties'
