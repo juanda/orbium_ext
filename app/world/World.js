@@ -5,8 +5,8 @@ Ext.define('Orbium.world.World', {
     extend: 'Ext.util.Observable',
     constructor: function(world) {
 
-        Orbium.app.consoleLog('constructor Orbium.World');
-        Orbium.app.consoleLog(world);
+//        Orbium.app.consoleLog('constructor Orbium.World');
+//        Orbium.app.consoleLog(world);
 
         this.callParent();
 
@@ -28,7 +28,7 @@ Ext.define('Orbium.world.World', {
         this.physicsWorld.broadphase = new CANNON.NaiveBroadphase();
         this.physicsWorld.solver.iterations = 10;
     },
-    initScene: function(world) {
+    initScene: function(worldContainer) {
 
         var me = this;
 
@@ -38,8 +38,8 @@ Ext.define('Orbium.world.World', {
 
 
         // Get the DOM Element of the world
-        var container = world.getEl();
-
+        var container = worldContainer;
+        
         // Create the THREE scene
         this.scene = new THREE.Scene();
 
@@ -281,10 +281,6 @@ Ext.define('Orbium.world.World', {
                 this.itemSelected = null;
             }
 
-
-
-
-
             this.renderer.render(this.scene, this.camera);
 
 //            if (this.intersected != intersects[ 0 ].object) {
@@ -309,10 +305,6 @@ Ext.define('Orbium.world.World', {
         if (!this.itemSelected)
             return;
         
-        console.log(this.itemSelected.mouseX);
-        console.log(this.itemSelected.mouseY);
-        console.log(this.bodyMenu);
-            
         this.bodyMenu.setPagePosition(this.itemSelected.mouseX, this.itemSelected.mouseY);
         this.bodyMenu.show();
     },

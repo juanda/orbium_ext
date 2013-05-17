@@ -5,7 +5,15 @@ Ext.define('Orbium.controller.BodyMenu', {
         this.control({
             'orbiumbodymenu > menuitem#change_properties': {
                 click: function(menuitem) {
-                    console.log(menuitem);
+
+                }
+            },
+            'orbiumbodymenu > menuitem#display_graph': {
+                click: function(menuitem) {
+                                       
+                    var kbody = Orbium.app.mundo.itemSelected.id;
+                    var w = Ext.create('Orbium.view.ChartWindow', kbody, "Velocity vs time", "x", "y");
+                    w.show();
                 }
             }
         });
