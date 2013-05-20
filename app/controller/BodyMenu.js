@@ -11,7 +11,7 @@ Ext.define('Orbium.controller.BodyMenu', {
             'orbiumbodymenu > menuitem#display_graph': {
                 click: function(menuitem) {
                                        
-                    var kbody = Orbium.app.mundo.itemSelected.id;
+                    var kbody = Orbium.app.mundo.indexOfBodyWithMeshId(Orbium.app.mundo.itemSelected.id);
                     var w = Ext.create('Orbium.view.ChartWindow', kbody, "Velocity vs time", "x", "y");
                     w.show();
                 }

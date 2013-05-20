@@ -194,9 +194,9 @@ Ext.define('Orbium.world.World', {
 
 
         body.addToWorld(this);
-
+        
         // Add to bodies collection
-        this.bodies.push(body);
+        var len = this.bodies.push(body);
 
         // render
         this.renderer.render(this.scene, this.camera);
@@ -240,6 +240,19 @@ Ext.define('Orbium.world.World', {
 
         // render
         this.renderer.render(this.scene, this.camera);
+    },
+    indexOfBodyWithMeshId: function(id){
+        // id is a body mesh index
+
+        var indexBody = null;
+        
+        this.bodies.forEach(function(body, index){
+            if(body.mesh.id === id){
+                indexBody = index;
+            }
+        });
+        
+        return indexBody;
     },
     selectBody: function(e) {
 
