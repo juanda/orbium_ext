@@ -39,7 +39,7 @@ Ext.define('Orbium.view.ChartWindow', {
 
         this.callParent();
 
-        this.setTitle(windowTitle);
+        this.setTitle('Body: '+ this.kbody);
 
 
 //        Ext.util.Observable.observe(Orbium.app.mundo);
