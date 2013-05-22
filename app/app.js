@@ -7,9 +7,7 @@ Ext.application({
     debug: true,
     launch: function() {
         Ext.getBody().on("contextmenu", Ext.emptyFn, null, {preventDefault: true});
-        Ext.create('Orbium.view.Viewport');
-        var w = Ext.create('Orbium.view.MyWindow');
-        w.show();
+        Ext.create('Orbium.view.Viewport');        
     },
     consoleLog: function(c) {
         if (Orbium.app.debug) {

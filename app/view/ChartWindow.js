@@ -11,12 +11,13 @@ Ext.define('Orbium.view.ChartWindow', {
     alias: 'widget.orbiumchartwindow',
     width: 400,
     height: 500,
-    minimizable: true,
+    //minimizable: true,
     animCollapse: true,
     layout: 'fit',
+    resizable: false,
     constructor: function(kbody, windowTitle, magX, magY) {
 
-        var me = this;
+        var me = me_window = this;        
 
         /**
          * A model is needed to create a store, and a store is neede
@@ -67,10 +68,25 @@ Ext.define('Orbium.view.ChartWindow', {
             data: [{}]
         });
 
+        var magnitudes = Ext.create('Ext.data.Store', {
+            fields: ['abbr', 'name'],
+            data: [
+                {"abbr": "t", "name": "Time"},
+                {"abbr": "x", "name": "Position X"},
+                {"abbr": "y", "name": "Position Y"},
+                {"abbr": "z", "name": "Position Z"},
+                {"abbr": "vx", "name": "Velocity X"},
+                {"abbr": "vy", "name": "Velocity Y"},
+                {"abbr": "vz", "name": "Velocity Z"}
+
+            ]
+        });
+
         this.items = [{
                 xtype: 'chart',
                 style: 'background:#fff',
                 store: store,
+                maxHeight: 420,
                 axes: [
                     {
                         title: me.ytitle,
@@ -96,8 +112,54 @@ Ext.define('Orbium.view.ChartWindow', {
                         yField: 'y',
                     }
                 ]
-            }];
-
+            },
+            {
+                xtype: 'toolbar',
+                layout: 'vbox',
+                region: 'south',
+                items: [
+                    {
+                        xtype: 'combobox',
+                        fieldLabel: 'x-axe:',
+                        store: magnitudes,
+                        queryMode: 'local',
+                        displayField: 'name',
+                        valueField: 'abbr',
+                        editable: false,
+                        value: "t",
+                        listeners: {
+                            'select': function(evt) {
+                                clearInterval(this.intervalDrawPoint);
+                                me.magX = evt.value;
+                                me.xtitle = me.getAxeTitle(me.magX);
+                                me_window.getComponent(0).axes.items[1].title = me.xtitle;
+                                me.startDraw();
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'combobox',
+                        fieldLabel: 'y-axe',
+                        store: magnitudes,
+                        queryMode: 'local',
+                        displayField: 'name',
+                        valueField: 'abbr',
+                        editable: false,
+                        value: "x",
+                        listeners: {
+                            'select': function(evt) {
+                                clearInterval(this.intervalDrawPoint);
+                                me.magY = evt.value;
+                                me.ytitle = me.getAxeTitle(me.magY);                                
+                                me_window.getComponent(0).axes.items[0].title = me.ytitle;
+                                me.startDraw();
+                            }
+                        }
+                    }
+                ],
+            }
+        ];                
+        
         this.callParent();
         this.startDraw();
     },
@@ -142,35 +204,35 @@ Ext.define('Orbium.view.ChartWindow', {
         switch (magnitude) {
             case "x":
                 return Orbium.app.mundo.bodies[this.kbody].physics.position.x;
-                
+
             case "y":
                 return Orbium.app.mundo.bodies[this.kbody].physics.position.y;
-                
+
             case "z":
                 return Orbium.app.mundo.bodies[this.kbody].physics.position.z;
-                
+
             case "vx":
                 return Orbium.app.mundo.bodies[this.kbody].physics.velocity.x;
-                
+
             case "vy":
                 return Orbium.app.mundo.bodies[this.kbody].physics.velocity.y;
 
             case "vz":
                 return Orbium.app.mundo.bodies[this.kbody].physics.velocity.z;
-               
+
             case "wx":
-                return Orbium.app.mundo.bodies[this.kbody].physics.angularVelocity.x;                
-                
+                return Orbium.app.mundo.bodies[this.kbody].physics.angularVelocity.x;
+
             case "wy":
                 return Orbium.app.mundo.bodies[this.kbody].physics.angularVelocity.y;
-                               
+
             case "wz":
                 return Orbium.app.mundo.bodies[this.kbody].physics.angularVelocity.z;
 
             case "t":
-                return Orbium.app.mundo.physicsWorld.time;                             
+                return Orbium.app.mundo.physicsWorld.time;
         }
-        
+
 
     },
     startDraw: function() {
@@ -206,7 +268,7 @@ Ext.define('Orbium.view.ChartWindow', {
         this.getComponent(0).axes.items[1].minimum = xmin;
         this.getComponent(0).axes.items[1].maximum = xmax;
 
-        console.log(this.getComponent(0).axes);
+        //console.log(this.getComponent(0).axes);
 
 
         this.intervalDrawPoint = setInterval(function() {
