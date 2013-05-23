@@ -22,6 +22,7 @@ Ext.define('Orbium.view.SphereForm', {
                     margin: '10'
                 },
                 {
+                    itemId: 'radius',
                     xtype: 'numberfield',
                     name: 'radius',
                     width: 50,
@@ -34,6 +35,11 @@ Ext.define('Orbium.view.SphereForm', {
         };
 
         this.callParent();
+    },
+    fillForm: function(body) {
+        this.down('#radius').setValue(body.parameters.geometry.radius);
+        
+        this.callParent(body);
     }
 
 });

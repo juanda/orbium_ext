@@ -161,7 +161,7 @@ Ext.define('Orbium.world.World', {
     },
     addCube: function(params) {
        
-        var parameters = {
+        var parameters = {            
             physicsParams: {
                 mass: parseFloat(params.mass),
                 angularDamping: parseFloat(params.angularDamping)

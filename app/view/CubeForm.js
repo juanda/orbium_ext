@@ -15,13 +15,14 @@ Ext.define('Orbium.view.CubeForm', {
                 pack: 'start'
             },
             items: [
-                {
+                {                    
                     xtype: 'label',
                     forId: 'width',
                     text: 'Width:',
                     margin: '10'
                 },
                 {
+                    itemId: 'width',
                     xtype: 'numberfield',
                     name: 'width',
                     width: 50,
@@ -34,6 +35,7 @@ Ext.define('Orbium.view.CubeForm', {
                     margin: '10'
                 },
                 {
+                    itemId: 'height',
                     xtype: 'numberfield',
                     name: 'height',
                     width: 50,
@@ -46,6 +48,7 @@ Ext.define('Orbium.view.CubeForm', {
                     margin: '10'
                 },
                 {
+                    itemId: 'depth',
                     xtype: 'numberfield',
                     name: 'depth',
                     width: 50,
@@ -56,6 +59,15 @@ Ext.define('Orbium.view.CubeForm', {
 
         this.callParent();
 
+    },
+            
+    fillForm: function(body){
+        
+        this.down('#width').setValue(body.parameters.geometry.width);
+        this.down('#height').setValue(body.parameters.geometry.height);
+        this.down('#depth').setValue(body.parameters.geometry.depth);
+        
+        this.callParent(body);
     }
 
 });
