@@ -39,7 +39,7 @@ Ext.define('Orbium.view.SphereForm', {
     fillForm: function(body) {
         this.down('#radius').setValue(body.parameters.geometry.radius);
         
-        this.callParent(body);
+        this.callParent(arguments);
     }
 
 });

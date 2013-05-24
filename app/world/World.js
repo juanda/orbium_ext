@@ -39,7 +39,7 @@ Ext.define('Orbium.world.World', {
 
         // Get the DOM Element of the world
         var container = worldContainer;
-        
+
         // Create the THREE scene
         this.scene = new THREE.Scene();
 
@@ -160,8 +160,8 @@ Ext.define('Orbium.world.World', {
         this.fireEvent("pauseAnimation");
     },
     addCube: function(params) {
-       
-        var parameters = {            
+
+        var parameters = {
             physicsParams: {
                 mass: parseFloat(params.mass),
                 angularDamping: parseFloat(params.angularDamping)
@@ -186,7 +186,7 @@ Ext.define('Orbium.world.World', {
                     x: parseFloat(params.angularVelocity_x),
                     y: parseFloat(params.angularVelocity_y),
                     z: parseFloat(params.angularVelocity_z)
-            }
+                }
             }
         };
 
@@ -194,7 +194,7 @@ Ext.define('Orbium.world.World', {
 
 
         body.addToWorld(this);
-        
+
         // Add to bodies collection
         var len = this.bodies.push(body);
 
@@ -202,8 +202,7 @@ Ext.define('Orbium.world.World', {
         this.renderer.render(this.scene, this.camera);
     },
     addSphere: function(params) {
-
-        console.log(params);
+       
         var parameters = {
             physicsParams: {
                 mass: parseFloat(params.mass),
@@ -241,17 +240,23 @@ Ext.define('Orbium.world.World', {
         // render
         this.renderer.render(this.scene, this.camera);
     },
-    indexOfBodyWithMeshId: function(id){
+    editCube: function(params) {
+
+    },
+    editSphere: function(params) {
+
+    },
+    indexOfBodyWithMeshId: function(id) {
         // id is a body mesh index
 
         var indexBody = null;
-        
-        this.bodies.forEach(function(body, index){
-            if(body.mesh.id === id){
+
+        this.bodies.forEach(function(body, index) {
+            if (body.mesh.id === id) {
                 indexBody = index;
             }
         });
-        
+
         return indexBody;
     },
     selectBody: function(e) {
@@ -279,7 +284,7 @@ Ext.define('Orbium.world.World', {
             var intersected = intersects[ 0 ].object;
 
             // Revert color to old selected body
-            
+
             if (this.itemSelected) {
                 this.itemSelected.material.color.setHex(0xff0000);
             }
@@ -314,10 +319,10 @@ Ext.define('Orbium.world.World', {
         }
     },
     showBodyContexMenu: function(e) {
-        
+
         if (!this.itemSelected)
             return;
-        
+
         this.bodyMenu.setPagePosition(this.itemSelected.mouseX, this.itemSelected.mouseY);
         this.bodyMenu.show();
     },

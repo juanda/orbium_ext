@@ -66,8 +66,8 @@ Ext.define('Orbium.view.CubeForm', {
         this.down('#width').setValue(body.parameters.geometry.width);
         this.down('#height').setValue(body.parameters.geometry.height);
         this.down('#depth').setValue(body.parameters.geometry.depth);
-        
-        this.callParent(body);
+                
+        this.callParent(arguments);
     }
 
 });

@@ -7,6 +7,7 @@ Ext.define('Orbium.view.BodyForm', {
     animCollapse: true,
     layout: 'fit',
     modal: true,
+    edition: false,
     constructor: function() {
 
         this.formItems = [{
@@ -232,10 +233,12 @@ Ext.define('Orbium.view.BodyForm', {
                         if (form.isValid()) {
                             switch (me.bodyType) {
                                 case 'cube':
-                                    Orbium.app.mundo.addCube(form.getValues());
+                                    me.edition ? Orbium.app.mundo.editCube(form.getValues()) :
+                                            Orbium.app.mundo.addCube(form.getValues());
                                     break;
                                 case 'sphere':
-                                    Orbium.app.mundo.addSphere(form.getValues());
+                                    me.edition ? Orbium.app.mundo.editSphere(form.getValues()) :
+                                            Orbium.app.mundo.addSphere(form.getValues());
 
                                     break;
                             }
@@ -258,22 +261,23 @@ Ext.define('Orbium.view.BodyForm', {
         this.callParent();
     },
     fillForm: function(body) {
+
         this.down('#position_x').setValue(body.parameters.initialConditions.position.x);
         this.down('#position_y').setValue(body.parameters.initialConditions.position.y);
         this.down('#position_z').setValue(body.parameters.initialConditions.position.z);
-        
+
         this.down('#velocity_x').setValue(body.parameters.initialConditions.velocity.x);
         this.down('#velocity_y').setValue(body.parameters.initialConditions.velocity.y);
         this.down('#velocity_z').setValue(body.parameters.initialConditions.velocity.z);
-        
+
         this.down('#angularVelocity_x').setValue(body.parameters.initialConditions.angularVelocity.x);
         this.down('#angularVelocity_y').setValue(body.parameters.initialConditions.angularVelocity.y);
         this.down('#angularVelocity_z').setValue(body.parameters.initialConditions.angularVelocity.z);
-        
+
         this.down('#mass').setValue(body.parameters.physicsParams.mass);
         this.down('#angularDamping').setValue(body.parameters.physicsParams.angularDamping);
-        
-        
+
+
     }
 
 });

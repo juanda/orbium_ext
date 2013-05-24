@@ -3,11 +3,7 @@ Ext.define('Orbium.controller.BodyMenu', {
     init: function() {
 
         this.control({
-            'orbiumbodymenu > menuitem#change_properties': {
-                click: function(menuitem) {
-
-                }
-            },
+            
             'orbiumbodymenu > menuitem#display_graph': {
                 click: function(menuitem) {
 
@@ -18,10 +14,8 @@ Ext.define('Orbium.controller.BodyMenu', {
             },
             'orbiumbodymenu > menuitem#change_properties': {
                 click: function(menuitem) {
-
                     var kbody = Orbium.app.mundo.indexOfBodyWithMeshId(Orbium.app.mundo.itemSelected.id);
-
-                    console.log(Ext.getClassName(Orbium.app.mundo.bodies[kbody]));
+                    
                     
                     var form;
                     switch (Ext.getClassName(Orbium.app.mundo.bodies[kbody])) {
@@ -34,6 +28,7 @@ Ext.define('Orbium.controller.BodyMenu', {
                             form.title = 'Edit sphere (body ' + kbody + ')';
                             break;
                     }
+                    form.edition = true;
                     form.fillForm(Orbium.app.mundo.bodies[kbody]);
                     form.show();
 
