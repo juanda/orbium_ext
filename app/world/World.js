@@ -202,7 +202,7 @@ Ext.define('Orbium.world.World', {
         this.renderer.render(this.scene, this.camera);
     },
     addSphere: function(params) {
-       
+
         var parameters = {
             physicsParams: {
                 mass: parseFloat(params.mass),
@@ -240,8 +240,44 @@ Ext.define('Orbium.world.World', {
         // render
         this.renderer.render(this.scene, this.camera);
     },
-    editCube: function(params) {
+    editCube: function(kbody, params) {
 
+        var parameters = {
+            physicsParams: {
+                mass: parseFloat(params.mass),
+                angularDamping: parseFloat(params.angularDamping)
+            },
+            geometry: {
+                width: parseFloat(params.width),
+                height: parseFloat(params.height),
+                depth: parseFloat(params.depth)
+            },
+            initialConditions: {
+                position: {
+                    x: parseFloat(params.position_x),
+                    y: parseFloat(params.position_y),
+                    z: parseFloat(params.position_z)
+                },
+                velocity: {
+                    x: parseFloat(params.velocity_x),
+                    y: parseFloat(params.velocity_y),
+                    z: parseFloat(params.velocity_z)
+                },
+                angularVelocity: {
+                    x: parseFloat(params.angularVelocity_x),
+                    y: parseFloat(params.angularVelocity_y),
+                    z: parseFloat(params.angularVelocity_z)
+                }
+            }
+        };
+
+        var body = this.bodies[kbody];
+
+        body.
+        
+
+        // render
+        this.renderer.render(this.scene, this.camera);
     },
     editSphere: function(params) {
 
