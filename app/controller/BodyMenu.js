@@ -29,6 +29,7 @@ Ext.define('Orbium.controller.BodyMenu', {
                             break;
                     }
                     form.edition = true;
+                    form.kbody = kbody;
                     form.fillForm(Orbium.app.mundo.bodies[kbody]);
                     form.show();
 

@@ -272,8 +272,8 @@ Ext.define('Orbium.world.World', {
         };
 
         var body = this.bodies[kbody];
-
-        body.
+        
+        body.edit(parameters);
         
 
         // render

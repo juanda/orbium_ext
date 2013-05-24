@@ -1,6 +1,5 @@
 Ext.define('Orbium.world.Cube', {
     extend: 'Orbium.world.BaseBody',
-    
     createPhysicBody: function() {
         var m = this.cannonToThreeMultiplier;
         var shape = new CANNON.Box(
@@ -11,7 +10,7 @@ Ext.define('Orbium.world.Cube', {
 
         this.physics = new CANNON.RigidBody(this.parameters.physicsParams.mass, shape);
 
-        this.setPhysicParams();        
+        this.setPhysicParams();
     },
     createMeshBody: function() {
         var geometry = new THREE.CubeGeometry(
@@ -20,7 +19,14 @@ Ext.define('Orbium.world.Cube', {
                 this.parameters.geometry.depth
                 );
         this.createMesh(geometry);
+    },
+    editPhysicBody: function() {
+        console.log(this);
+    },
+    editMeshBody: function() {
+
     }
+
 
 });
 

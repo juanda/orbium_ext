@@ -7,18 +7,18 @@ Ext.define('Orbium.world.BaseBody', {
         this.physics = {};
         this.mesh = {};
 
-        this.create();
-
-    },
-    setParameters: function(params) {
-        this.parameters = params;
-        
-    },
-    create: function() {
         this.createPhysicBody();
         this.createMeshBody();               
         this.sincroPosition();
+
     },
+    edit: function(params) {
+        this.parameters = params;
+        this.editPhysicBody();
+        this.editMeshBody();
+        this.sincroPosition();
+        
+    },   
     setPhysicParams: function() {
 
         this.physics.position.x = this.parameters.initialConditions.position.x;

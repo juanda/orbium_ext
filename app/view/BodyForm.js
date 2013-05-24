@@ -233,11 +233,11 @@ Ext.define('Orbium.view.BodyForm', {
                         if (form.isValid()) {
                             switch (me.bodyType) {
                                 case 'cube':
-                                    me.edition ? Orbium.app.mundo.editCube(form.getValues()) :
+                                    me.edition ? Orbium.app.mundo.editCube(me.kbody, form.getValues()) :
                                             Orbium.app.mundo.addCube(form.getValues());
                                     break;
                                 case 'sphere':
-                                    me.edition ? Orbium.app.mundo.editSphere(form.getValues()) :
+                                    me.edition ? Orbium.app.mundo.editSphere(me.kbody, form.getValues()) :
                                             Orbium.app.mundo.addSphere(form.getValues());
 
                                     break;
