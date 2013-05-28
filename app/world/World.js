@@ -160,7 +160,9 @@ Ext.define('Orbium.world.World', {
         this.fireEvent("pauseAnimation");
     },
     addCube: function(params) {
-
+        
+        console.log(params);
+        
         var parameters = {
             physicsParams: {
                 mass: parseFloat(params.mass),

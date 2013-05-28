@@ -1,13 +1,20 @@
 
 Ext.application({
-    requires: ['Orbium.view.Viewport', 'Ext.ComponentQuery'],
+    requires: [
+        'Orbium.view.Viewport',
+        'Ext.ComponentQuery',
+        'Orbium.model.Cube',
+        'Orbium.model.Body'
+        
+    ],
     name: 'Orbium',
     appFolder: 'app',
     controllers: ['Toolbar', 'BodyMenu'],
     debug: true,
     launch: function() {
         Ext.getBody().on("contextmenu", Ext.emptyFn, null, {preventDefault: true});
-        Ext.create('Orbium.view.Viewport');        
+        Ext.create('Orbium.view.Viewport');    
+                
     },
     consoleLog: function(c) {
         if (Orbium.app.debug) {
