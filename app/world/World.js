@@ -20,6 +20,14 @@ Ext.define('Orbium.world.World', {
         this.initScene(world);
         this.initPhysicsWorld();
 
+        this.bodyStore = Ext.create('Ext.data.Store', {
+            model: 'Orbium.model.Body',
+            proxy: {
+                type: 'localstorage',
+                id: 'bodies'
+            }
+        });
+
     },
     initPhysicsWorld: function() {
         this.timeStep = 1 / 60;
@@ -160,9 +168,9 @@ Ext.define('Orbium.world.World', {
         this.fireEvent("pauseAnimation");
     },
     addCube: function(params) {
-        
+
         console.log(params);
-        
+
         var parameters = {
             physicsParams: {
                 mass: parseFloat(params.mass),
@@ -274,15 +282,20 @@ Ext.define('Orbium.world.World', {
         };
 
         var body = this.bodies[kbody];
-        
+
         body.edit(parameters);
-        
+
 
         // render
         this.renderer.render(this.scene, this.camera);
     },
     editSphere: function(params) {
 
+    },
+    addBody: function(body){
+        this.bodyStore.add(body);
+        this.physicsWorld.add(body.physics);
+        this.scene.add(body.mesh);
     },
     indexOfBodyWithMeshId: function(id) {
         // id is a body mesh index

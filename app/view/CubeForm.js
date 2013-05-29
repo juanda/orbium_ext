@@ -3,7 +3,7 @@ Ext.define('Orbium.view.CubeForm', {
     alias: 'widget.orbiumcubeform',
     title: 'Add new cube',
     constructor: function() {
-        
+
         this.bodyType = 'cube';
         this.formGeometryItem = {
             xtype: 'fieldset',
@@ -15,7 +15,7 @@ Ext.define('Orbium.view.CubeForm', {
                 pack: 'start'
             },
             items: [
-                {                    
+                {
                     xtype: 'label',
                     forId: 'width',
                     text: 'Width:',
@@ -60,13 +60,26 @@ Ext.define('Orbium.view.CubeForm', {
         this.callParent();
 
     },
-            
-    fillForm: function(body){
+    addBody: function(form) {
         
+        var body = Ext.create('Orbium.model.Cube');
+                      
+        form.updateRecord(body);
+        
+        Orbium.app.mundo.addBody(body);
+        
+        console.log(Orbium.app.mundo.bodyStore);
+
+    },
+    editBody: function() {
+
+    },
+    fillForm: function(body) {
+
         this.down('#width').setValue(body.parameters.geometry.width);
         this.down('#height').setValue(body.parameters.geometry.height);
         this.down('#depth').setValue(body.parameters.geometry.depth);
-                
+
         this.callParent(arguments);
     }
 
