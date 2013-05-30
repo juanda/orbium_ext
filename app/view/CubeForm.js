@@ -22,9 +22,9 @@ Ext.define('Orbium.view.CubeForm', {
                     margin: '10'
                 },
                 {
-                    itemId: 'width',
+                    itemId: 'geometry_width',
                     xtype: 'numberfield',
-                    name: 'width',
+                    name: 'geometry_width',
                     width: 50,
                     value: 1
                 },
@@ -35,9 +35,9 @@ Ext.define('Orbium.view.CubeForm', {
                     margin: '10'
                 },
                 {
-                    itemId: 'height',
+                    itemId: 'geometry_height',
                     xtype: 'numberfield',
-                    name: 'height',
+                    name: 'geometry_height',
                     width: 50,
                     value: 1
                 },
@@ -48,9 +48,9 @@ Ext.define('Orbium.view.CubeForm', {
                     margin: '10'
                 },
                 {
-                    itemId: 'depth',
+                    itemId: 'geometry_depth',
                     xtype: 'numberfield',
-                    name: 'depth',
+                    name: 'geometry_depth',
                     width: 50,
                     value: 1
                 }
@@ -63,13 +63,11 @@ Ext.define('Orbium.view.CubeForm', {
     addBody: function(form) {
         
         var body = Ext.create('Orbium.model.Cube');
-                      
-        form.updateRecord(body);
+           
+        form.updateRecord(body);       
+        body.createPhysicAndMeshBodies();  
         
-        Orbium.app.mundo.addBody(body);
-        
-        console.log(Orbium.app.mundo.bodyStore);
-
+        Orbium.app.mundo.addBody(body);                
     },
     editBody: function() {
 

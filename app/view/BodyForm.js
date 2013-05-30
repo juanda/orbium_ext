@@ -174,16 +174,16 @@ Ext.define('Orbium.view.BodyForm', {
                     pack: 'start'
                 },
                 items: [
-                    {
+                    {                        
                         xtype: 'label',
                         forId: 'mass',
                         text: 'Mass:',
                         margin: '10'
                     },
                     {
-                        itemId: 'mass',
+                        itemId: 'physicParams_mass',
                         xtype: 'numberfield',
-                        name: 'mass',
+                        name: 'physicParams_mass',
                         width: 70,
                         value: 1,
                         minValue: 0.1,
@@ -196,9 +196,9 @@ Ext.define('Orbium.view.BodyForm', {
                         margin: '10'
                     },
                     {
-                        itemId: 'angularDamping',
+                        itemId: 'physicParams_angularDamping',
                         xtype: 'numberfield',
-                        name: 'angularDamping',
+                        name: 'physicParams_angularDamping',
                         width: 70,
                         value: 0,
                         minValue: 0,

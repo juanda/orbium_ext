@@ -101,10 +101,14 @@ Ext.define('Orbium.world.World', {
         this.physicsWorld.step(this.timeStep);
 
         // Copy coordinates from Cannon.js to Three.js
-        for (k in this.bodies) {
-            this.bodies[k].physics.position.copy(this.bodies[k].mesh.position);
-            this.bodies[k].physics.quaternion.copy(this.bodies[k].mesh.quaternion);
-        }
+        this.bodyStore.each(function() {
+            this.physics.position.copy(this.mesh.position);
+           //this.physics.quaternion.copy(this.mesh.quaternion);
+        });
+//        for (k in this.bodies) {
+//            this.bodies[k].physics.position.copy(this.bodies[k].mesh.position);
+//            this.bodies[k].physics.quaternion.copy(this.bodies[k].mesh.quaternion);
+//        }
 
     },
     animate: function() {
@@ -138,25 +142,32 @@ Ext.define('Orbium.world.World', {
 
         // Reset world state
 
-        for (k in this.bodies) {
-            // reset physical position and copy on associated mesh
-            this.bodies[k].physics.position.x = this.bodies[k].parameters.initialConditions.position.x;
-            this.bodies[k].physics.position.y = this.bodies[k].parameters.initialConditions.position.y;
-            this.bodies[k].physics.position.z = this.bodies[k].parameters.initialConditions.position.z;
-            this.bodies[k].physics.position.copy(this.bodies[k].mesh.position);
-
-            // reset physical quaternion and copy on associated mesh
-            this.bodies[k].physics.velocity.x = this.bodies[k].parameters.initialConditions.velocity.x;
-            this.bodies[k].physics.velocity.y = this.bodies[k].parameters.initialConditions.velocity.y;
-            this.bodies[k].physics.velocity.z = this.bodies[k].parameters.initialConditions.velocity.z;
-
-            //¿Qué pasa con el cuaternión cuando reseteamos?
-            this.bodies[k].physics.quaternion.x = 0;
-            this.bodies[k].physics.quaternion.y = 0;
-            this.bodies[k].physics.quaternion.z = 0;
-
-            this.bodies[k].physics.quaternion.copy(this.bodies[k].mesh.quaternion);
-        }
+        this.bodyStore.each(function() {
+            this.setPhysicParams();
+            this.physics.quaternion.x = 0;
+            this.physics.quaternion.y = 0;
+            this.physics.quaternion.z = 0;
+            this.physics.quaternion.copy(this.mesh.quaternion);
+        });
+//        for (k in this.bodies) {
+//            // reset physical position and copy on associated mesh
+//            this.bodies[k].physics.position.x = this.bodies[k].parameters.initialConditions.position.x;
+//            this.bodies[k].physics.position.y = this.bodies[k].parameters.initialConditions.position.y;
+//            this.bodies[k].physics.position.z = this.bodies[k].parameters.initialConditions.position.z;
+//            this.bodies[k].physics.position.copy(this.bodies[k].mesh.position);
+//
+//            // reset physical quaternion and copy on associated mesh
+//            this.bodies[k].physics.velocity.x = this.bodies[k].parameters.initialConditions.velocity.x;
+//            this.bodies[k].physics.velocity.y = this.bodies[k].parameters.initialConditions.velocity.y;
+//            this.bodies[k].physics.velocity.z = this.bodies[k].parameters.initialConditions.velocity.z;
+//
+//            //¿Qué pasa con el cuaternión cuando reseteamos?
+//            this.bodies[k].physics.quaternion.x = 0;
+//            this.bodies[k].physics.quaternion.y = 0;
+//            this.bodies[k].physics.quaternion.z = 0;
+//
+//            this.bodies[k].physics.quaternion.copy(this.bodies[k].mesh.quaternion);
+//        }
 
         this.worldStatus = "STOPPED";
         this.render();
@@ -292,21 +303,30 @@ Ext.define('Orbium.world.World', {
     editSphere: function(params) {
 
     },
-    addBody: function(body){
+    addBody: function(body) {
+        console.log(body);
         this.bodyStore.add(body);
         this.physicsWorld.add(body.physics);
         this.scene.add(body.mesh);
+
+        this.renderer.render(this.scene, this.camera);
     },
     indexOfBodyWithMeshId: function(id) {
         // id is a body mesh index
 
         var indexBody = null;
 
-        this.bodies.forEach(function(body, index) {
-            if (body.mesh.id === id) {
-                indexBody = index;
+        var me = this;
+        this.bodyStore.each(function() {
+            if (this.mesh.id === id) {
+                indexBody = me.indexOf(this);
             }
         });
+//        this.bodies.forEach(function(body, index) {
+//            if (body.mesh.id === id) {
+//                indexBody = index;
+//            }
+//        });
 
         return indexBody;
     },
