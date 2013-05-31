@@ -229,17 +229,18 @@ Ext.define('Orbium.view.BodyForm', {
 
                         var form = this.up('form').getForm();
                         if (form.isValid()) {
-                            switch (me.bodyType) {
-                                case 'cube':
-                                    me.addBody(form);
-//                                    me.edition ? Orbium.app.mundo.editCube(me.kbody, form.getValues()) :
-//                                            Orbium.app.mundo.addCube(form.getValues());
-                                    break;
-                                case 'sphere':
-                                    me.edition ? Orbium.app.mundo.editSphere(me.kbody, form.getValues()) :
-                                            Orbium.app.mundo.addSphere(form.getValues());
-                                    break;
-                            }
+                            me.addBody(form);
+//                            switch (me.bodyType) {
+//                                case 'cube':
+//                            
+////                                    me.edition ? Orbium.app.mundo.editCube(me.kbody, form.getValues()) :
+////                                            Orbium.app.mundo.addCube(form.getValues());
+//                                    break;
+//                                case 'sphere':
+//                                    me.edition ? Orbium.app.mundo.editSphere(me.kbody, form.getValues()) :
+//                                            Orbium.app.mundo.addSphere(form.getValues());
+//                                    break;
+//                            }
                             this.up('window').close();
 //                            form.submit({
 //                                success: function(form, action) {

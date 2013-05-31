@@ -62,7 +62,7 @@ Ext.define('Orbium.view.CubeForm', {
     },
     addBody: function(form) {
         
-        var body = Ext.create('Orbium.model.Cube');
+        var body = Ext.create('Orbium.model.Cube', form);
            
         form.updateRecord(body);       
         body.createPhysicAndMeshBodies();  
@@ -71,14 +71,6 @@ Ext.define('Orbium.view.CubeForm', {
     },
     editBody: function() {
 
-    },
-    fillForm: function(body) {
-
-        this.down('#width').setValue(body.parameters.geometry.width);
-        this.down('#height').setValue(body.parameters.geometry.height);
-        this.down('#depth').setValue(body.parameters.geometry.depth);
-
-        this.callParent(arguments);
     }
 
 });
