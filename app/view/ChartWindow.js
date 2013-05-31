@@ -1,7 +1,7 @@
 /**
  * Class: Orbium.view.ChartWindow
  * 
- * It's a window minimizable to plot cinematic data of the bodies
+ * It's a window minimizable intended to plot cinematic data of the bodies.
  * 
  * The index of the body to plot is needed when instantiating a ChartWindow
  * 
@@ -15,12 +15,10 @@ Ext.define('Orbium.view.ChartWindow', {
     animCollapse: true,
     layout: 'fit',
     resizable: false,
-    constructor: function(kbody, windowTitle, magX, magY) {
-
-        var me = me_window = this;        
+    constructor: function(kbody, windowTitle, magX, magY) {       
 
         /**
-         * A model is needed to create a store, and a store is neede
+         * A model is needed to create a store, and a store is needed
          * to draw its data in a chart
          */
         Ext.define('PlotXY', {
@@ -61,6 +59,7 @@ Ext.define('Orbium.view.ChartWindow', {
     initComponent: function() {
 
         var me = this;
+        
         // A store is needed to initialize the chart
         // Let's start with an empty one
         var store = Ext.create('Ext.data.Store', {

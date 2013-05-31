@@ -20,11 +20,11 @@ Ext.define('Orbium.controller.BodyMenu', {
                     var form;
                     switch (Ext.getClassName(Orbium.app.mundo.bodies[kbody])) {
                         case 'Orbium.world.Cube':
-                            form = Ext.create('Orbium.view.CubeForm');
+                            form = Ext.create('Orbium.view.form.CubeForm');
                             form.title = 'Edit cube (' + kbody + ')';                            
                             break;
                         case 'Orbium.world.Sphere':
-                            form = Ext.create('Orbium.view.SphereForm');
+                            form = Ext.create('Orbium.view.form.SphereForm');
                             form.title = 'Edit sphere (body ' + kbody + ')';
                             break;
                     }

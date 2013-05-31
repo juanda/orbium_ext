@@ -1,10 +1,18 @@
+/**
+ * Toolbar for bodies control
+ * --------------------------
+ * 
+ * These tools are controlled by envents
+ * on app/controller/Toolbar.js
+ */
+
 Ext.define('Orbium.view.ToolbarBodies', {
     extend: 'Ext.toolbar.Toolbar',
     alias: 'widget.orbiumtoolbarbodies',
     width: 400,
     initComponent: function() {
-        
-        this.items = [            
+
+        this.items = [
             {
                 xtype: 'button',
                 action: 'addCube',
@@ -24,11 +32,9 @@ Ext.define('Orbium.view.ToolbarBodies', {
             {
                 xtype: 'button',
                 action: 'chart',
-                text: 'chart',                
+                text: 'chart'
             }
-          
         ];
-
 
         this.callParent();
     }

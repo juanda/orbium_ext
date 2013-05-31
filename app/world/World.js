@@ -77,7 +77,7 @@ Ext.define('Orbium.world.World', {
         });
         Ext.EventManager.onWindowResize(this.onWindowResize, this);
 //        window.addEventListener("keypress", function() {
-//            var cubeform = Ext.create('Orbium.view.CubeForm');
+//            var cubeform = Ext.create('Orbium.view.form.CubeForm');
 //            cubeform.show();
 //        }, false);
 

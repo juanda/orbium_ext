@@ -1,9 +1,16 @@
+/**
+ * Main Viewport
+ * -------------
+ *
+ * It's the main container holding the UI elements
+ */
+
 Ext.define('Orbium.view.Viewport', {
     extend: 'Ext.container.Viewport',
     requires: [
         'Orbium.view.ToolbarBodies',
         'Orbium.view.ToolbarPlayer',
-        'Orbium.view.World'        
+        'Orbium.view.World'
     ],
     alias: 'widget.orbiumviewport',
     layout: 'column',

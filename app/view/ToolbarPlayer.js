@@ -1,3 +1,11 @@
+/**
+ * Toolbar for player control
+ * --------------------------
+ * 
+ * These tools are controlled by envents
+ * on app/controller/Toolbar.js
+ */
+
 Ext.define('Orbium.view.ToolbarPlayer', {
     extend: 'Ext.toolbar.Toolbar',
     alias: 'widget.orbiumtoolbarplayer',
@@ -5,9 +13,9 @@ Ext.define('Orbium.view.ToolbarPlayer', {
     initComponent: function() {
         this.items = [
             {
-                xtype: 'button', // default for Toolbars
+                xtype: 'button',
                 action: 'play',
-                text: 'play',               
+                text: 'play'
             },
             {
                 xtype: 'button',
@@ -18,10 +26,8 @@ Ext.define('Orbium.view.ToolbarPlayer', {
                 xtype: 'button',
                 action: 'stop',
                 text: 'stop'
-            }            
-          
+            }
         ];
-
 
         this.callParent();
     }
