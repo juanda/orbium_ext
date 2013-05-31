@@ -143,10 +143,7 @@ Ext.define('Orbium.world.World', {
         // Reset world state
 
         this.bodyStore.each(function() {
-            this.setPhysicParams();
-            this.physics.quaternion.x = 0;
-            this.physics.quaternion.y = 0;
-            this.physics.quaternion.z = 0;
+            this.setPhysicParams();         
             this.physics.quaternion.copy(this.mesh.quaternion);
         });
 //        for (k in this.bodies) {
@@ -170,6 +167,7 @@ Ext.define('Orbium.world.World', {
 //        }
 
         this.worldStatus = "STOPPED";
+        this.updatePhysics();
         this.render();
         this.fireEvent("stopAnimation");
     },
@@ -319,7 +317,7 @@ Ext.define('Orbium.world.World', {
         var me = this;
         this.bodyStore.each(function() {
             if (this.mesh.id === id) {
-                indexBody = me.indexOf(this);
+                indexBody = me.bodyStore.indexOf(this);
             }
         });
 //        this.bodies.forEach(function(body, index) {

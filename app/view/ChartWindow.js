@@ -203,31 +203,31 @@ Ext.define('Orbium.view.ChartWindow', {
 
         switch (magnitude) {
             case "x":
-                return Orbium.app.mundo.bodies[this.kbody].physics.position.x;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.position.x;
 
             case "y":
-                return Orbium.app.mundo.bodies[this.kbody].physics.position.y;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.position.y;
 
             case "z":
-                return Orbium.app.mundo.bodies[this.kbody].physics.position.z;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.position.z;
 
             case "vx":
-                return Orbium.app.mundo.bodies[this.kbody].physics.velocity.x;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.velocity.x;
 
             case "vy":
-                return Orbium.app.mundo.bodies[this.kbody].physics.velocity.y;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.velocity.y;
 
             case "vz":
-                return Orbium.app.mundo.bodies[this.kbody].physics.velocity.z;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.velocity.z;
 
             case "wx":
-                return Orbium.app.mundo.bodies[this.kbody].physics.angularVelocity.x;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.angularVelocity.x;
 
             case "wy":
-                return Orbium.app.mundo.bodies[this.kbody].physics.angularVelocity.y;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.angularVelocity.y;
 
             case "wz":
-                return Orbium.app.mundo.bodies[this.kbody].physics.angularVelocity.z;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.angularVelocity.z;
 
             case "t":
                 return Orbium.app.mundo.physicsWorld.time;
