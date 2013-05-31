@@ -103,7 +103,7 @@ Ext.define('Orbium.world.World', {
         // Copy coordinates from Cannon.js to Three.js
         this.bodyStore.each(function() {
             this.physics.position.copy(this.mesh.position);
-           //this.physics.quaternion.copy(this.mesh.quaternion);
+            this.physics.quaternion.copy(this.mesh.quaternion);
         });
 //        for (k in this.bodies) {
 //            this.bodies[k].physics.position.copy(this.bodies[k].mesh.position);
