@@ -1,3 +1,11 @@
+/**
+ * Contextual menu for body control
+ * --------------------------------
+ * 
+ * This menu is controlled by envents
+ * on app/controller/BodyMenu.js
+ */
+
 Ext.define('Orbium.view.BodyMenu', {
     extend: 'Ext.menu.Menu',
     alias: 'widget.orbiumbodymenu',

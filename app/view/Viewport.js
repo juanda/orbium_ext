@@ -10,7 +10,9 @@ Ext.define('Orbium.view.Viewport', {
     requires: [
         'Orbium.view.ToolbarBodies',
         'Orbium.view.ToolbarPlayer',
-        'Orbium.view.World'
+        'Orbium.view.World',
+        'Orbium.world.World',
+        'Orbium.view.BodyMenu'
     ],
     alias: 'widget.orbiumviewport',
     layout: 'column',
