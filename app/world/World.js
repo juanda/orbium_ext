@@ -44,8 +44,8 @@ Ext.define('Orbium.world.World', {
 
         // Create the renderer 
         // TODO: Autodetect canvas available to use the correct one
-        // this.renderer = new THREE.WebGLRenderer();
-        this.renderer = new THREE.CanvasRenderer();
+        this.renderer = new THREE.WebGLRenderer();
+        //this.renderer = new THREE.CanvasRenderer();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
         container.appendChild(this.renderer.domElement);
