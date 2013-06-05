@@ -258,10 +258,11 @@ Ext.define('Orbium.view.form.BodyForm', {
         this.items = cubeForm;
         this.callParent();
     },
-    editBody: function(body,form) {
+    editBody: function(form) {
         
+        var body = Orbium.app.mundo.bodyStore.getAt(this.kbody);
         form.updateRecord(body); 
-        body.edit();
+        body.updatePhysicsAndMeshBodies(body);
     }
 });
 

@@ -44,11 +44,12 @@ Ext.define('Orbium.model.Body', {
         this.createMeshBody();
         this.sincroPosition();
     },
-    edit: function() {
+    updatePhysicsAndMeshBodies: function() {
         this.physics = {};
         this.mesh = {};
 
         this.createPhysicAndMeshBodies();
+        Orbium.app.mundo.render();
 
     },
     // Set common physics params from model to cannon.js object
