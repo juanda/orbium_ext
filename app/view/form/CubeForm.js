@@ -68,11 +68,7 @@ Ext.define('Orbium.view.form.CubeForm', {
         body.createPhysicAndMeshBodies();  
         
         Orbium.app.mundo.addBody(body);                
-    },
-    editBody: function() {
-
     }
-
 });
 
 

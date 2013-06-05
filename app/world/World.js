@@ -5,9 +5,6 @@ Ext.define('Orbium.world.World', {
     extend: 'Ext.util.Observable',
     constructor: function(world) {
 
-//        Orbium.app.consoleLog('constructor Orbium.World');
-//        Orbium.app.consoleLog(world);
-
         this.callParent();
 
         // These events aren't use yet
@@ -20,6 +17,7 @@ Ext.define('Orbium.world.World', {
         this.initScene(world);
         this.initPhysicsWorld();
 
+        // This is to store the bodies added to the world
         this.bodyStore = Ext.create('Ext.data.Store', {
             model: 'Orbium.model.Body',
             proxy: {
@@ -28,13 +26,6 @@ Ext.define('Orbium.world.World', {
             }
         });
 
-    },
-    initPhysicsWorld: function() {
-        this.timeStep = 1 / 60;
-        this.physicsWorld = new CANNON.World();
-        this.physicsWorld.gravity.set(0, -9.8, 0);
-        this.physicsWorld.broadphase = new CANNON.NaiveBroadphase();
-        this.physicsWorld.solver.iterations = 10;
     },
     initScene: function(worldContainer) {
 
@@ -51,8 +42,9 @@ Ext.define('Orbium.world.World', {
         // Create the THREE scene
         this.scene = new THREE.Scene();
 
-        // Create the renderer
-//        this.renderer = new THREE.WebGLRenderer();
+        // Create the renderer 
+        // TODO: Autodetect canvas available to use the correct one
+        // this.renderer = new THREE.WebGLRenderer();
         this.renderer = new THREE.CanvasRenderer();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -69,6 +61,7 @@ Ext.define('Orbium.world.World', {
             container.appendChild(this.stats.domElement);
         }
 
+        // Right button detection to activate body menu.
         container.on({
             click: me.selectBody,
             contextmenu: me.showBodyContexMenu,
@@ -76,12 +69,15 @@ Ext.define('Orbium.world.World', {
 
         });
         Ext.EventManager.onWindowResize(this.onWindowResize, this);
-//        window.addEventListener("keypress", function() {
-//            var cubeform = Ext.create('Orbium.view.form.CubeForm');
-//            cubeform.show();
-//        }, false);
 
         this.renderer.render(this.scene, this.camera);
+    },
+    initPhysicsWorld: function() {
+        this.timeStep = 1 / 60;
+        this.physicsWorld = new CANNON.World();
+        this.physicsWorld.gravity.set(0, -9.8, 0);
+        this.physicsWorld.broadphase = new CANNON.NaiveBroadphase();
+        this.physicsWorld.solver.iterations = 10;
     },
     render: function() {
         var toolbarBodies = Ext.ComponentQuery.query('orbiumtoolbarbodies');
@@ -105,11 +101,6 @@ Ext.define('Orbium.world.World', {
             this.physics.position.copy(this.mesh.position);
             this.physics.quaternion.copy(this.mesh.quaternion);
         });
-//        for (k in this.bodies) {
-//            this.bodies[k].physics.position.copy(this.bodies[k].mesh.position);
-//            this.bodies[k].physics.quaternion.copy(this.bodies[k].mesh.quaternion);
-//        }
-
     },
     animate: function() {
 
@@ -146,25 +137,6 @@ Ext.define('Orbium.world.World', {
             this.setPhysicParams();         
             this.physics.quaternion.copy(this.mesh.quaternion);
         });
-//        for (k in this.bodies) {
-//            // reset physical position and copy on associated mesh
-//            this.bodies[k].physics.position.x = this.bodies[k].parameters.initialConditions.position.x;
-//            this.bodies[k].physics.position.y = this.bodies[k].parameters.initialConditions.position.y;
-//            this.bodies[k].physics.position.z = this.bodies[k].parameters.initialConditions.position.z;
-//            this.bodies[k].physics.position.copy(this.bodies[k].mesh.position);
-//
-//            // reset physical quaternion and copy on associated mesh
-//            this.bodies[k].physics.velocity.x = this.bodies[k].parameters.initialConditions.velocity.x;
-//            this.bodies[k].physics.velocity.y = this.bodies[k].parameters.initialConditions.velocity.y;
-//            this.bodies[k].physics.velocity.z = this.bodies[k].parameters.initialConditions.velocity.z;
-//
-//            //¿Qué pasa con el cuaternión cuando reseteamos?
-//            this.bodies[k].physics.quaternion.x = 0;
-//            this.bodies[k].physics.quaternion.y = 0;
-//            this.bodies[k].physics.quaternion.z = 0;
-//
-//            this.bodies[k].physics.quaternion.copy(this.bodies[k].mesh.quaternion);
-//        }
 
         this.worldStatus = "STOPPED";
         this.updatePhysics();
@@ -175,134 +147,9 @@ Ext.define('Orbium.world.World', {
         cancelAnimationFrame(this.requestAnimationId);
         this.worldStatus = "PAUSED";
         this.fireEvent("pauseAnimation");
-    },
-    addCube: function(params) {
-
-        console.log(params);
-
-        var parameters = {
-            physicsParams: {
-                mass: parseFloat(params.mass),
-                angularDamping: parseFloat(params.angularDamping)
-            },
-            geometry: {
-                width: parseFloat(params.width),
-                height: parseFloat(params.height),
-                depth: parseFloat(params.depth)
-            },
-            initialConditions: {
-                position: {
-                    x: parseFloat(params.position_x),
-                    y: parseFloat(params.position_y),
-                    z: parseFloat(params.position_z)
-                },
-                velocity: {
-                    x: parseFloat(params.velocity_x),
-                    y: parseFloat(params.velocity_y),
-                    z: parseFloat(params.velocity_z)
-                },
-                angularVelocity: {
-                    x: parseFloat(params.angularVelocity_x),
-                    y: parseFloat(params.angularVelocity_y),
-                    z: parseFloat(params.angularVelocity_z)
-                }
-            }
-        };
-
-        var body = Ext.create('Orbium.world.Cube', parameters);
-
-
-        body.addToWorld(this);
-
-        // Add to bodies collection
-        var len = this.bodies.push(body);
-
-        // render
-        this.renderer.render(this.scene, this.camera);
-    },
-    addSphere: function(params) {
-
-        var parameters = {
-            physicsParams: {
-                mass: parseFloat(params.mass),
-                angularDamping: parseFloat(params.angularDamping)
-            },
-            geometry: {
-                radius: parseFloat(params.radius)
-            },
-            initialConditions: {
-                position: {
-                    x: parseFloat(params.position_x),
-                    y: parseFloat(params.position_y),
-                    z: parseFloat(params.position_z)
-                },
-                velocity: {
-                    x: parseFloat(params.velocity_x),
-                    y: parseFloat(params.velocity_y),
-                    z: parseFloat(params.velocity_z)
-                },
-                angularVelocity: {
-                    x: parseFloat(params.angularVelocity_x),
-                    y: parseFloat(params.angularVelocity_y),
-                    z: parseFloat(params.angularVelocity_z)
-                }
-            }
-        };
-
-        var body = Ext.create('Orbium.world.Sphere', parameters);
-
-        body.addToWorld(this);
-
-        // Add to bodies collection
-        this.bodies.push(body);
-
-        // render
-        this.renderer.render(this.scene, this.camera);
-    },
-    editCube: function(kbody, params) {
-
-        var parameters = {
-            physicsParams: {
-                mass: parseFloat(params.mass),
-                angularDamping: parseFloat(params.angularDamping)
-            },
-            geometry: {
-                width: parseFloat(params.width),
-                height: parseFloat(params.height),
-                depth: parseFloat(params.depth)
-            },
-            initialConditions: {
-                position: {
-                    x: parseFloat(params.position_x),
-                    y: parseFloat(params.position_y),
-                    z: parseFloat(params.position_z)
-                },
-                velocity: {
-                    x: parseFloat(params.velocity_x),
-                    y: parseFloat(params.velocity_y),
-                    z: parseFloat(params.velocity_z)
-                },
-                angularVelocity: {
-                    x: parseFloat(params.angularVelocity_x),
-                    y: parseFloat(params.angularVelocity_y),
-                    z: parseFloat(params.angularVelocity_z)
-                }
-            }
-        };
-
-        var body = this.bodies[kbody];
-
-        body.edit(parameters);
-
-
-        // render
-        this.renderer.render(this.scene, this.camera);
-    },
-    editSphere: function(params) {
-
-    },
+     },
     addBody: function(body) {
-        console.log(body);
+        
         this.bodyStore.add(body);
         this.physicsWorld.add(body.physics);
         this.scene.add(body.mesh);
@@ -320,11 +167,6 @@ Ext.define('Orbium.world.World', {
                 indexBody = me.bodyStore.indexOf(this);
             }
         });
-//        this.bodies.forEach(function(body, index) {
-//            if (body.mesh.id === id) {
-//                indexBody = index;
-//            }
-//        });
 
         return indexBody;
     },
@@ -406,5 +248,3 @@ Ext.define('Orbium.world.World', {
 
     }
 });
-
-

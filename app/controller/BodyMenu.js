@@ -15,15 +15,15 @@ Ext.define('Orbium.controller.BodyMenu', {
             'orbiumbodymenu > menuitem#change_properties': {
                 click: function(menuitem) {
                     var kbody = Orbium.app.mundo.indexOfBodyWithMeshId(Orbium.app.mundo.itemSelected.id);
-                    
-                    
+                                        
                     var form;
-                    switch (Ext.getClassName(Orbium.app.mundo.bodies[kbody])) {
-                        case 'Orbium.world.Cube':
+                    var className = Ext.getClassName(Orbium.app.mundo.bodyStore.getAt(kbody));
+                    switch (className) {
+                        case 'Orbium.model.Cube':
                             form = Ext.create('Orbium.view.form.CubeForm');
                             form.title = 'Edit cube (' + kbody + ')';                            
                             break;
-                        case 'Orbium.world.Sphere':
+                        case 'Orbium.model.Sphere':
                             form = Ext.create('Orbium.view.form.SphereForm');
                             form.title = 'Edit sphere (body ' + kbody + ')';
                             break;

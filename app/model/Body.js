@@ -1,5 +1,23 @@
+/**
+ * Base model for all bodies
+ * -------------------------
+ *
+ * It's a Ext model with some addons for 
+ * physics and mesh creation.
+ * 
+ * Each concrete  body which extends this model
+ * must implement the following methods:
+ *
+ * - createPhysicBody
+ * - createMeshBody
+ * 
+ * See Orbium.model.Cube implementation to get
+ * an example.
+ */
+
 Ext.define('Orbium.model.Body', {
     extend: 'Ext.data.Model',
+    // Common fields
     fields: [
         {name: 'name', type: 'string'},
         {name: 'physicParams_mass', type: 'number'},
@@ -18,9 +36,8 @@ Ext.define('Orbium.model.Body', {
 
         this.callParent();
 
-        this.physics = {};
-        this.mesh = {};               
-
+        this.physics = {}; // Object for physics (cannon.js) info
+        this.mesh = {};    // Object for mesh (three.js) info         
     },
     createPhysicAndMeshBodies: function() {
         this.createPhysicBody();
@@ -28,11 +45,13 @@ Ext.define('Orbium.model.Body', {
         this.sincroPosition();
     },
     edit: function() {
-        this.editPhysicBody();
-        this.editMeshBody();
-        this.sincroPosition();
+        this.physics = {};
+        this.mesh = {};
+
+        this.createPhysicAndMeshBodies();
 
     },
+    // Set common physics params from model to cannon.js object
     setPhysicParams: function() {
 
         this.physics.position.x = this.data.position_x;
@@ -50,12 +69,14 @@ Ext.define('Orbium.model.Body', {
         this.physics.angularDamping = this.data.physicParams_angularDamping;
 
     },
-    createMesh: function(geometry) {
+    // Create a mesh (three.js) from a given geometry 
+    createMeshFromGeometry: function(geometry) {
         var material = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe: true});
 
         this.mesh = new THREE.Mesh(geometry, material);
         this.mesh.useQuaternion = true;
     },
+    // sincronize mesh and physics position
     sincroPosition: function() {
         this.physics.position.copy(this.mesh.position);
         //this.physics.quaternion.copy(this.mesh.quaternion);

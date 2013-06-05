@@ -24,13 +24,7 @@ Ext.define('Orbium.model.Cube', {
                 this.data.geometry_height,
                 this.data.geometry_depth
                 );
-        this.createMesh(geometry);
-    },
-    editPhysicBody: function() {
-        console.log(this);
-    },
-    editMeshBody: function() {
-
+        this.createMeshFromGeometry(geometry);
     }
 });
 

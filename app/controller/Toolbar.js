@@ -1,5 +1,9 @@
 Ext.define('Orbium.controller.Toolbar', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'Orbium.view.form.CubeForm',
+        'Orbium.view.form.SphereForm'
+    ],
     init: function() {
 
         this.control({

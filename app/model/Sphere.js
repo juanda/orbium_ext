@@ -18,7 +18,7 @@ Ext.define('Orbium.model.Sphere', {
     createMeshBody: function() {
         var geometry = new THREE.SphereGeometry(this.data.geometry_radius, 20, 20);
 
-        this.createMesh(geometry);
+        this.createMeshFromGeometry(geometry);
     }
 });
 

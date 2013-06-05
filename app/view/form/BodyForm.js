@@ -2,15 +2,20 @@
  * Base form class to ask for body params
  * --------------------------------------
  * 
- * This class is a window with a set of common
- * form items to every body:
+ * This class is a form-window with a set of 
+ * common form items to every body:
  * - position x,y,z
  * - velocity x,y,z
  * - angular velocity x,y,z
  * - mass
  * - angular damping
  * 
- * the geometric params are 
+ * the geometric params are defined by each
+ * concrete bodyform (i.e. by CubeForm, SphereForm, ...)
+ * 
+ * The concrete body form which extend this class, must
+ * implement a method call addBody, which is responsible
+ * to create the body, initialize it and add to the World
  */
 
 Ext.define('Orbium.view.form.BodyForm', {
@@ -244,27 +249,8 @@ Ext.define('Orbium.view.form.BodyForm', {
 
                         var form = this.up('form').getForm();
                         if (form.isValid()) {
-                            me.addBody(form);
-//                            switch (me.bodyType) {
-//                                case 'cube':
-//                            
-////                                    me.edition ? Orbium.app.mundo.editCube(me.kbody, form.getValues()) :
-////                                            Orbium.app.mundo.addCube(form.getValues());
-//                                    break;
-//                                case 'sphere':
-//                                    me.edition ? Orbium.app.mundo.editSphere(me.kbody, form.getValues()) :
-//                                            Orbium.app.mundo.addSphere(form.getValues());
-//                                    break;
-//                            }
-                            this.up('window').close();
-//                            form.submit({
-//                                success: function(form, action) {
-//                                    Ext.Msg.alert('Success', action.result.msg);
-//                                },
-//                                failure: function(form, action) {
-//                                    Ext.Msg.alert('Failed', action.result.msg);
-//                                }
-//                            });
+                            me.edition ? me.editBody(form) : me.addBody(form);
+                            this.up('window').close();                          
                         }
                     }
                 }]
@@ -272,22 +258,11 @@ Ext.define('Orbium.view.form.BodyForm', {
         this.items = cubeForm;
         this.callParent();
     },
-    
-    fillForm: function(body) {
-
-        this.down('#position_x').setValue(body.parameters.initialConditions.position.x);
-        this.down('#position_y').setValue(body.parameters.initialConditions.position.y);
-        this.down('#position_z').setValue(body.parameters.initialConditions.position.z);
-        this.down('#velocity_x').setValue(body.parameters.initialConditions.velocity.x);
-        this.down('#velocity_y').setValue(body.parameters.initialConditions.velocity.y);
-        this.down('#velocity_z').setValue(body.parameters.initialConditions.velocity.z);
-        this.down('#angularVelocity_x').setValue(body.parameters.initialConditions.angularVelocity.x);
-        this.down('#angularVelocity_y').setValue(body.parameters.initialConditions.angularVelocity.y);
-        this.down('#angularVelocity_z').setValue(body.parameters.initialConditions.angularVelocity.z);
-        this.down('#mass').setValue(body.parameters.physicsParams.mass);
-        this.down('#angularDamping').setValue(body.parameters.physicsParams.angularDamping);
+    editBody: function(body,form) {
+        
+        form.updateRecord(body); 
+        body.edit();
     }
-
 });
 
 
