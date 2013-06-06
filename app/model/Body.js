@@ -46,6 +46,13 @@ Ext.define('Orbium.model.Body', {
     },
     updatePhysicsAndMeshBodies: function(){
         
+        // the solution to update the physics and mesh bodies
+        // asociated to the body is:
+        // - 1, remove the body from the world/scene
+        // - 2, create new physics body/mesh
+        // - 3, add these new physics to the world/scene
+        // - 4, render the world
+
         // remove the physics body from the physics World
         Orbium.app.mundo.physicsWorld.remove(this.physics);
         Orbium.app.mundo.scene.remove(this.mesh);
