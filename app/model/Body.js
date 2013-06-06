@@ -44,13 +44,21 @@ Ext.define('Orbium.model.Body', {
         this.createMeshBody();
         this.sincroPosition();
     },
-    updatePhysicsAndMeshBodies: function() {
-        this.physics = {};
-        this.mesh = {};
+    updatePhysicsAndMeshBodies: function(){
+        
+        // remove the physics body from the physics World
+        Orbium.app.mundo.physicsWorld.remove(this.physics);
+        Orbium.app.mundo.scene.remove(this.mesh);
+
+        this.physics  = {};
+        this.mesh     = {};
 
         this.createPhysicAndMeshBodies();
-        Orbium.app.mundo.render();
 
+        Orbium.app.mundo.physicsWorld.add(this.physics);
+        Orbium.app.mundo.scene.add(this.mesh);
+
+        Orbium.app.mundo.render();
     },
     // Set common physics params from model to cannon.js object
     setPhysicParams: function() {
