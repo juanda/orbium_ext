@@ -1,7 +1,6 @@
 Ext.define('Orbium.world.World', {
     bodies: [],
-    worldStatus: "STOPPED",
-    cannonToThreeMultiplier: 2,
+    worldStatus: "STOPPED",    
     extend: 'Ext.util.Observable',
     constructor: function(world) {
 

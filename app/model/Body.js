@@ -35,7 +35,8 @@ Ext.define('Orbium.model.Body', {
     constructor: function() {
 
         this.callParent();
-
+        
+        this.cannonToThreeMultiplier = 2;
         this.physics = {}; // Object for physics (cannon.js) info
         this.mesh = {};    // Object for mesh (three.js) info         
     },
