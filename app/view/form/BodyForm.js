@@ -264,9 +264,7 @@ Ext.define('Orbium.view.form.BodyForm', {
 
         form.updateRecord(body);
         body.createPhysicAndMeshBodies();
-
-        body.isMySpaceOccuped();
-
+        
         Orbium.app.mundo.addBody(body);
     },
     editBody: function(form) {
