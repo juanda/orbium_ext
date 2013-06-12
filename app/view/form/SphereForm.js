@@ -30,20 +30,16 @@ Ext.define('Orbium.view.form.SphereForm', {
                     minValue: 0.1,
                     msgTarget: 'under'
                 }
-
             ]
         };
 
         this.callParent();
     },
-    addBody: function(form) {
+    createBody: function(form) {
 
         var body = Ext.create('Orbium.model.Sphere', form);
 
-        form.updateRecord(body);
-        body.createPhysicAndMeshBodies();
-
-        Orbium.app.mundo.addBody(body);
+        return body;
     }
 
 });

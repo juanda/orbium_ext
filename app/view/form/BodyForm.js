@@ -258,6 +258,17 @@ Ext.define('Orbium.view.form.BodyForm', {
         this.items = cubeForm;
         this.callParent();
     },
+    addBody: function(form) {
+
+        var body = this.createBody(form);
+
+        form.updateRecord(body);
+        body.createPhysicAndMeshBodies();
+
+        body.isMySpaceOccuped();
+
+        Orbium.app.mundo.addBody(body);
+    },
     editBody: function(form) {
         
         var body = Orbium.app.mundo.bodyStore.getAt(this.kbody);

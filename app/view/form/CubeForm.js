@@ -60,14 +60,11 @@ Ext.define('Orbium.view.form.CubeForm', {
         this.callParent();
 
     },
-    addBody: function(form) {
+    createBody: function(form) {
         
         var body = Ext.create('Orbium.model.Cube', form);
            
-        form.updateRecord(body);       
-        body.createPhysicAndMeshBodies();  
-        
-        Orbium.app.mundo.addBody(body);                
+        return body;               
     }
 });
 
