@@ -1,6 +1,6 @@
 Ext.define('Orbium.world.World', {
     bodies: [],
-    worldStatus: "STOPPED",    
+    worldStatus: "STOPPED",
     extend: 'Ext.util.Observable',
     constructor: function(world) {
 
@@ -130,10 +130,12 @@ Ext.define('Orbium.world.World', {
     stopAnimation: function() {
         cancelAnimationFrame(this.requestAnimationId);
 
+        console.log(this);
         // Reset world state
 
         this.bodyStore.each(function() {
-            this.setPhysicParams();         
+            this.setPhysicParams();
+            this.physics.initQuaternion.copy(this.physics.quaternion);
             this.physics.quaternion.copy(this.mesh.quaternion);
         });
 
@@ -146,13 +148,23 @@ Ext.define('Orbium.world.World', {
         cancelAnimationFrame(this.requestAnimationId);
         this.worldStatus = "PAUSED";
         this.fireEvent("pauseAnimation");
-     },
+    },
     addBody: function(body) {
-        
+
         this.bodyStore.add(body);
         this.physicsWorld.add(body.physics);
         this.scene.add(body.mesh);
 
+        console.log(this);
+        this.renderer.render(this.scene, this.camera);
+    },
+    addGroundPlane: function(body) {
+
+        //this.bodyStore.add(body);
+        this.physicsWorld.add(body.physics);
+        this.scene.add(body.mesh);
+
+        console.log(this);
         this.renderer.render(this.scene, this.camera);
     },
     indexOfBodyWithMeshId: function(id) {

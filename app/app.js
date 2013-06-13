@@ -11,7 +11,8 @@ Ext.application({
         'Orbium.view.Viewport',
         'Orbium.model.Cube',
         'Orbium.model.Sphere',
-        'Orbium.model.Body'
+        'Orbium.model.Body',
+        'Orbium.model.GroundPlane'
     ],
     name: 'Orbium',
     appFolder: 'app',

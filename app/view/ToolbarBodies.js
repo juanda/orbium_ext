@@ -25,6 +25,11 @@ Ext.define('Orbium.view.ToolbarBodies', {
             },
             {
                 xtype: 'button',
+                action: 'addGroundPlane',
+                text: 'Add Ground'
+            },
+            {
+                xtype: 'button',
                 action: 'gravity',
                 text: 'gravity',
                 enableToggle: true
