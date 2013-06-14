@@ -5,9 +5,9 @@ Ext.define('Orbium.model.Sphere', {
     ],
     createPhysicBody: function() {
 
-        var m = this.cannonToThreeMultiplier;
+        //var m = this.cannonToThreeMultiplier;
 
-        var shape = new CANNON.Sphere(this.data.geometry_radius / m);
+        var shape = new CANNON.Sphere(this.data.geometry_radius /* m*/);
 
         // Shape on plane       
         this.physics = new CANNON.RigidBody(this.data.physicParams_mass, shape);

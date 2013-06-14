@@ -84,6 +84,7 @@ Ext.define('Orbium.model.Body', {
         this.physics.angularVelocity.z = this.data.angularVelocity_z;
 
         this.physics.angularDamping = this.data.physicParams_angularDamping;
+        this.physics.linearDamping = 0;
 
     },
     // Create a mesh (three.js) from a given geometry 

@@ -77,6 +77,9 @@ Ext.define('Orbium.world.World', {
         this.physicsWorld.gravity.set(0, -9.8, 0);
         this.physicsWorld.broadphase = new CANNON.NaiveBroadphase();
         this.physicsWorld.solver.iterations = 10;
+
+        this.physicsWorld.defaultContactMaterial.contactEquationStiffness = 1e7;
+        this.physicsWorld.defaultContactMaterial.contactEquationRegularizationTime = 4;
     },
     render: function() {
         var toolbarBodies = Ext.ComponentQuery.query('orbiumtoolbarbodies');

@@ -15,7 +15,7 @@ Ext.define('Orbium.model.Cube', {
                 );
 
         this.physics = new CANNON.RigidBody(this.data.physicParams_mass, shape);
-
+        
         this.setPhysicParams();
     },
     createMeshBody: function() {
