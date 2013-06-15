@@ -8,6 +8,7 @@
 Ext.define('Orbium.view.Viewport', {
     extend: 'Ext.container.Viewport',
     requires: [
+        'Orbium.view.ToolbarContainer',
         'Orbium.view.ToolbarBodies',
         'Orbium.view.ToolbarPlayer',
         'Orbium.view.World',
@@ -15,15 +16,12 @@ Ext.define('Orbium.view.Viewport', {
         'Orbium.view.BodyMenu'
     ],
     alias: 'widget.orbiumviewport',
-    layout: 'column',
+    layout: 'vbox',
     initComponent: function() {
         this.items = [
             {
-                xtype: 'orbiumtoolbarplayer'
-            },
-            {
-                xtype: 'orbiumtoolbarbodies'
-            },
+                xtype: 'orbiumtoolbarcontainer'
+            },            
             {
                 xtype: 'world'
             }

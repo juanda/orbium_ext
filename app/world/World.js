@@ -9,12 +9,10 @@ Ext.define('Orbium.world.World', {
         // These events aren't use yet
         this.addEvents("startAnimation", "pauseAnimation", "stopAnimation");
 
-        this.intersected = null;
-        this.itemSelected = null;
         this.bodyMenu = Ext.create('Orbium.view.BodyMenu');
 
         this.initScene(world);
-        this.initPhysicsWorld();
+        //this.initPhysicsWorld();
 
         // This is to store the bodies added to the world
         this.bodyStore = Ext.create('Ext.data.Store', {
@@ -30,46 +28,94 @@ Ext.define('Orbium.world.World', {
 
         var me = this;
 
-        // Needed to compute intersections and select object by picking with 
-        // the mouse
-        this.projector = new THREE.Projector();
-
+        // Init CubicVR
+        var gl = CubicVR.init(worldContainer);
+        if (!gl) {
+            alert("Sorry, no WebGL support.");
+            return;
+        }
+        ;
 
         // Get the DOM Element of the world
-        var container = worldContainer;
+        //var container = worldContainer;
+        var canvas = CubicVR.getCanvas();
 
-        // Create the THREE scene
-        this.scene = new THREE.Scene();
+        console.log(canvas);
 
-        // Create the renderer 
-        // TODO: Autodetect canvas available to use the correct one
-        //this.renderer = new THREE.WebGLRenderer();
-        this.renderer = new THREE.CanvasRenderer();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        // New scene with our canvas dimensions and default camera with FOV 80
+        //var scene = new CubicVR.Scene(canvas.width, canvas.height, 80);
 
-        container.appendChild(this.renderer.domElement);
+        var camera = new CubicVR.Camera({
+            name: "the_camera",
+            fov: 60.0,
+            position: [1.0, 1.0, -1.0],
+            lookat: [0.0, 0.0, 0.0],
+            width: canvas.width,
+            height: canvas.height
+        });
 
-        this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
-        this.camera.position.z = 30;
+        // Create the Light
+        var light = new CubicVR.Light({
+            name: "the_light",
+            type: "point",
+            position: [1.0, 1.5, -2.0]
+        });
+
+        // Create the Box Mesh
+        var boxMesh = new CubicVR.Mesh({
+            primitive: {
+                type: "box",
+                size: 1.0
+            },
+            compile: true
+        });
+
+        // Create the SceneObject
+        var sceneObject = new CubicVR.SceneObject({
+            name: "the_box",
+            position: [0.0, 0.0, 0.0],
+            mesh: boxMesh
+        });
+
+        // Create the Scene
+        var scene = new CubicVR.Scene();
+
+        scene.bind(camera);
+        scene.bind(light);
+        scene.bind(sceneObject);
+
+        // Add the default scene camera to the resize list to update on browser resize
+        CubicVR.addResizeable(camera);
+
+
+        // Start our main drawing loop, it provides a timer and the gl context as parameters
+        CubicVR.MainLoop(function(timer, gl) {
+            // perform any per-frame operations here
+            // perform any drawing operations here
+            scene.render();
+        });
+
+       
+
+
 
         // To monitor performance (fps)
-        if (Orbium.app.debug) {
-            this.stats = new Stats();
-            this.stats.domElement.style.position = 'absolute';
-            this.stats.domElement.style.top = '30px';
-            container.appendChild(this.stats.domElement);
-        }
+//        if (Orbium.app.debug) {
+//            this.stats = new Stats();
+//            this.stats.domElement.style.position = 'absolute';
+//            this.stats.domElement.style.top = '30px';
+//            container.appendChild(this.stats.domElement);
+//        }
 
         // Right button detection to activate body menu.
-        container.on({
-            click: me.selectBody,
-            contextmenu: me.showBodyContexMenu,
-            scope: this// Important. Ensure "this" is correct during handler execution
+//        container.on({
+//            click: me.selectBody,
+//            contextmenu: me.showBodyContexMenu,
+//            scope: this// Important. Ensure "this" is correct during handler execution
+//
+//        });
+//        Ext.EventManager.onWindowResize(this.onWindowResize, this);
 
-        });
-        Ext.EventManager.onWindowResize(this.onWindowResize, this);
-
-        this.renderer.render(this.scene, this.camera);
     },
     initPhysicsWorld: function() {
         this.timeStep = 1 / 60;

@@ -11,8 +11,7 @@ Ext.application({
         'Orbium.view.Viewport',
         'Orbium.model.Cube',
         'Orbium.model.Sphere',
-        'Orbium.model.Body',
-        'Orbium.model.GroundPlane'
+        'Orbium.model.Body'
     ],
     name: 'Orbium',
     appFolder: 'app',
@@ -20,7 +19,7 @@ Ext.application({
     debug: true,
     launch: function() {
         // Removes the contexmenu associated to the right button
-        Ext.getBody().on("contextmenu", Ext.emptyFn, null, {preventDefault: true});
+        //Ext.getBody().on("contextmenu", Ext.emptyFn, null, {preventDefault: true});
 
         Ext.create('Orbium.view.Viewport');
     },

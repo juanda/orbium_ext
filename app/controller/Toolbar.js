@@ -2,8 +2,7 @@ Ext.define('Orbium.controller.Toolbar', {
     extend: 'Ext.app.Controller',
     requires: [
         'Orbium.view.form.CubeForm',
-        'Orbium.view.form.SphereForm',
-        'Orbium.view.form.GroundPlaneForm'
+        'Orbium.view.form.SphereForm'
     ],
     init: function() {
 
@@ -22,9 +21,6 @@ Ext.define('Orbium.controller.Toolbar', {
             },
             'orbiumtoolbarbodies button[action=addBall]': {
                 click: this.onAddSphere
-            },
-            'orbiumtoolbarbodies button[action=addGroundPlane]': {
-                click: this.onAddGroundPlane
             },
             'orbiumtoolbarbodies button[action=chart]': {
                 click: this.onChart
@@ -55,13 +51,7 @@ Ext.define('Orbium.controller.Toolbar', {
         var sphereform = Ext.create('Orbium.view.form.SphereForm');
         sphereform.show();
     },
-    onAddGroundPlane: function() {
-        Orbium.app.consoleLog('add ground plane clicked');
-
-        var groundPlaneForm = Ext.create('Orbium.view.form.GroundPlaneForm');
-        groundPlaneForm.show();
-    },
-            onChart: function() {
+    onChart: function() {
         var kbody = 0;
         var w = Ext.create('Orbium.view.ChartWindow', kbody, "Velocity vs time", "x", "y");
         w.show();
