@@ -14,13 +14,12 @@ Ext.define('Orbium.view.World', {
         tag: 'div',
         cls: 'world'
     },
-    
-    html: '<canvas id="myCanvas" width="200" height="100"></canvas>',
+       
     onRender: function() {
         this.callParent();
 
         // And the world is created on the div hooked to the component
-        Orbium.app.mundo = Ext.create('Orbium.world.World', Ext.get("myCanvas").dom);
+        Orbium.app.mundo = Ext.create('Orbium.world.World', this);
     }
 
 });

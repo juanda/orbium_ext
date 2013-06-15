@@ -22,6 +22,10 @@ Ext.application({
         //Ext.getBody().on("contextmenu", Ext.emptyFn, null, {preventDefault: true});
 
         Ext.create('Orbium.view.Viewport');
+        
+        var mainMenu = Ext.create('Orbium.view.ToolbarContainer');
+        
+        mainMenu.showAt(5,5);
     },
     consoleLog: function(c) {
         if (Orbium.app.debug) {

@@ -16,12 +16,13 @@ Ext.define('Orbium.view.Viewport', {
         'Orbium.view.BodyMenu'
     ],
     alias: 'widget.orbiumviewport',
-    layout: 'vbox',
+    layout: {
+        type: 'vbox',
+        align: 'stretch',
+        pack: 'start',
+    },
     initComponent: function() {
-        this.items = [
-            {
-                xtype: 'orbiumtoolbarcontainer'
-            },            
+        this.items = [            
             {
                 xtype: 'world'
             }

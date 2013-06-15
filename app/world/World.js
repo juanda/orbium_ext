@@ -24,12 +24,12 @@ Ext.define('Orbium.world.World', {
         });
 
     },
-    initScene: function(worldContainer) {
+    initScene: function(world) {
 
         var me = this;
 
         // Init CubicVR
-        var gl = CubicVR.init(worldContainer);
+        var gl = CubicVR.init();
         if (!gl) {
             alert("Sorry, no WebGL support.");
             return;
@@ -39,8 +39,7 @@ Ext.define('Orbium.world.World', {
         // Get the DOM Element of the world
         //var container = worldContainer;
         var canvas = CubicVR.getCanvas();
-
-        console.log(canvas);
+        world.getEl().appendChild(canvas);        
 
         // New scene with our canvas dimensions and default camera with FOV 80
         //var scene = new CubicVR.Scene(canvas.width, canvas.height, 80);
@@ -86,7 +85,9 @@ Ext.define('Orbium.world.World', {
 
         // Add the default scene camera to the resize list to update on browser resize
         CubicVR.addResizeable(camera);
-
+        
+        // initialize a mouse view controller
+        mvc = new CubicVR.MouseViewController(canvas, scene.camera);
 
         // Start our main drawing loop, it provides a timer and the gl context as parameters
         CubicVR.MainLoop(function(timer, gl) {
