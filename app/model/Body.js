@@ -36,14 +36,13 @@ Ext.define('Orbium.model.Body', {
 
         this.callParent();
         
-        this.cannonToThreeMultiplier = 2;
-        this.physics = {}; // Object for physics (cannon.js) info
-        this.mesh = {};    // Object for mesh (three.js) info         
+        this.physics = {}; // Object for physics (ammo.js) info
+        this.mesh = {};    // Object for mesh (cubicvr.js) info         
     },
     createPhysicAndMeshBodies: function() {
-        this.createPhysicBody();
+        //this.createPhysicBody();
         this.createMeshBody();
-        this.sincroPosition();
+        //this.sincroPosition();
     },
     updatePhysicsAndMeshBodies: function(){
         
@@ -86,13 +85,6 @@ Ext.define('Orbium.model.Body', {
         this.physics.angularDamping = this.data.physicParams_angularDamping;
         this.physics.linearDamping = 0;
 
-    },
-    // Create a mesh (three.js) from a given geometry 
-    createMeshFromGeometry: function(geometry) {
-        var material = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe: true});
-
-        this.mesh = new THREE.Mesh(geometry, material);
-        this.mesh.useQuaternion = true;
     },
     // sincronize mesh and physics position
     sincroPosition: function() {

@@ -39,74 +39,84 @@ Ext.define('Orbium.world.World', {
         // Get the DOM Element of the world
         //var container = worldContainer;
         var canvas = CubicVR.getCanvas();
-        world.getEl().appendChild(canvas);        
+        world.getEl().appendChild(canvas);
 
-        // New scene with our canvas dimensions and default camera with FOV 80
-        //var scene = new CubicVR.Scene(canvas.width, canvas.height, 80);
+        // New scene with our canvas dimensions and camera with FOV 80
 
         var camera = new CubicVR.Camera({
             name: "the_camera",
-            fov: 60.0,
-            position: [1.0, 1.0, -1.0],
+            fov: 80.0,
+            position: [0.0, 0.0, -20.0],
             lookat: [0.0, 0.0, 0.0],
             width: canvas.width,
             height: canvas.height
         });
 
         // Create the Light
+
         var light = new CubicVR.Light({
-            name: "the_light",
-            type: "point",
-            position: [1.0, 1.5, -2.0]
-        });
-
-        // Create the Box Mesh
-        var boxMesh = new CubicVR.Mesh({
-            primitive: {
-                type: "box",
-                size: 1.0
-            },
-            compile: true
-        });
-
-        // Create the SceneObject
-        var sceneObject = new CubicVR.SceneObject({
-            name: "the_box",
-            position: [0.0, 0.0, 0.0],
-            mesh: boxMesh
-        });
+            type: CubicVR.enums.light.type.DIRECTIONAL,
+            specular: [1, 1, 1],
+            direction: [0.5, -1, 0.5]
+        })
 
         // Create the Scene
-        var scene = new CubicVR.Scene();
+        this.scene = new CubicVR.Scene();
 
-        scene.bind(camera);
-        scene.bind(light);
-        scene.bind(sceneObject);
+        this.scene.bind(camera);
+        this.scene.bind(light);
 
         // Add the default scene camera to the resize list to update on browser resize
         CubicVR.addResizeable(camera);
-        
+
         // initialize a mouse view controller
-        mvc = new CubicVR.MouseViewController(canvas, scene.camera);
+        mvc = new CubicVR.MouseViewController(canvas, this.scene.camera);
 
         // Start our main drawing loop, it provides a timer and the gl context as parameters
         CubicVR.MainLoop(function(timer, gl) {
             // perform any per-frame operations here
             // perform any drawing operations here
-            scene.render();
+            me.scene.render();
         });
 
-       
 
+        // Create a material for the mesh
+        var boxMaterial = new CubicVR.Material({
+            textures: {
+                color: new CubicVR.Texture("images/6583-diffuse.jpg")
+            }
+        });
+
+        // Add a box to mesh, size 1.0, apply material and UV parameters
+        var boxMesh = CubicVR.primitives.box({
+            size: 1.0,
+            material: boxMaterial,
+            uvmapper: {
+                projectionMode: CubicVR.enums.uv.projection.CUBIC,
+                scale: [1, 1, 1]
+            }
+        });
+
+        // triangulate and buffer object to GPU, remove unused data
+        boxMesh.prepare();
+        //Create several meshes to use when adding bodies
+        // Create the Box Mesh
+        this.meshes = {
+            boxMesh: boxMesh           
+        };
+
+        // triangulate and buffer object to GPU, remove unused data
+        this.meshes.boxMesh.prepare();
 
 
         // To monitor performance (fps)
-//        if (Orbium.app.debug) {
-//            this.stats = new Stats();
-//            this.stats.domElement.style.position = 'absolute';
-//            this.stats.domElement.style.top = '30px';
-//            container.appendChild(this.stats.domElement);
-//        }
+        if (Orbium.app.debug) {
+            this.stats = new Stats();
+            this.stats.domElement.style.position = 'absolute';
+            this.stats.domElement.style.top = 5;
+            this.stats.domElement.style.left = canvas.width - 100;
+            world.getEl().appendChild(this.stats.domElement);
+        }
 
         // Right button detection to activate body menu.
 //        container.on({
@@ -202,11 +212,11 @@ Ext.define('Orbium.world.World', {
     addBody: function(body) {
 
         this.bodyStore.add(body);
-        this.physicsWorld.add(body.physics);
-        this.scene.add(body.mesh);
+        //this.physicsWorld.add(body.physics);        
+        this.scene.bind(body.mesh);
 
         console.log(this);
-        this.renderer.render(this.scene, this.camera);
+        //this.renderer.render(this.scene, this.camera);
     },
     addGroundPlane: function(body) {
 
