@@ -12,7 +12,9 @@ Ext.define('Orbium.world.World', {
         this.bodyMenu = Ext.create('Orbium.view.BodyMenu');
 
         this.initScene(world);
-        //this.initPhysicsWorld();
+        this.createMaterialsAndMeshes();
+        this.initPhysicsWorld();
+        this.startMainLoop();
 
         // This is to store the bodies added to the world
         this.bodyStore = Ext.create('Ext.data.Store', {
@@ -22,6 +24,66 @@ Ext.define('Orbium.world.World', {
                 id: 'bodies'
             }
         });
+
+    },
+    createMaterialsAndMeshes: function() {
+        // Create a material for the mesh
+        var materialWall = new CubicVR.Material({
+            textures: {
+                color: new CubicVR.Texture("images/6583-diffuse.jpg")
+            }
+        });
+
+        // Add a box to mesh, size 1.0, apply material and UV parameters
+        var boxMesh = CubicVR.primitives.box({
+            size: 1.0,
+            material: materialWall,
+            uvmapper: {
+                projectionMode: CubicVR.enums.uv.projection.CUBIC,
+                scale: [1, 1, 1]
+            }
+        });
+
+        // triangulate and buffer object to GPU, remove unused data
+        boxMesh.prepare();
+
+        var sphereMesh = new CubicVR.Mesh({
+            primitive: {
+                type: "sphere",
+                radius: 1,
+                lat: 24,
+                lon: 24,
+                material: {
+                    color: [80 / 255, 200 / 255, 120 / 255],
+                    specular: [1, 1, 1],
+                    shininess: 0.9,
+                    env_amount: 1.0,
+                    textures: {
+                        color: "images/2576-diffuse.jpg",
+                        normal: "images/2576-normal.jpg",
+                        bump: "images/2576-bump.jpg",
+                        envsphere: "images/fract_reflections.jpg"
+                    }
+                },
+                uv: {
+                    projectionMode: "spherical",
+                    projectionAxis: "y",
+                    wrapW: 5,
+                    wrapH: 2.5
+                }
+            },
+            compile: true
+        });
+
+        sphereMesh.prepare();
+
+
+        //Create several meshes to use when adding bodies
+        // Create the Box Mesh
+        this.meshes = {
+            boxMesh: boxMesh,
+            sphereMesh: sphereMesh
+        };
 
     },
     initScene: function(world) {
@@ -58,7 +120,7 @@ Ext.define('Orbium.world.World', {
             type: CubicVR.enums.light.type.DIRECTIONAL,
             specular: [1, 1, 1],
             direction: [0.5, -1, 0.5]
-        })
+        });
 
         // Create the Scene
         this.scene = new CubicVR.Scene();
@@ -72,52 +134,15 @@ Ext.define('Orbium.world.World', {
         // initialize a mouse view controller
         mvc = new CubicVR.MouseViewController(canvas, this.scene.camera);
 
-        // Start our main drawing loop, it provides a timer and the gl context as parameters
-        CubicVR.MainLoop(function(timer, gl) {
-            // perform any per-frame operations here
-            // perform any drawing operations here
-            me.scene.render();
-        });
-
-
-        // Create a material for the mesh
-        var boxMaterial = new CubicVR.Material({
-            textures: {
-                color: new CubicVR.Texture("images/6583-diffuse.jpg")
-            }
-        });
-
-        // Add a box to mesh, size 1.0, apply material and UV parameters
-        var boxMesh = CubicVR.primitives.box({
-            size: 1.0,
-            material: boxMaterial,
-            uvmapper: {
-                projectionMode: CubicVR.enums.uv.projection.CUBIC,
-                scale: [1, 1, 1]
-            }
-        });
-
-        // triangulate and buffer object to GPU, remove unused data
-        boxMesh.prepare();
-        //Create several meshes to use when adding bodies
-        // Create the Box Mesh
-        this.meshes = {
-            boxMesh: boxMesh           
-        };
-
-        // triangulate and buffer object to GPU, remove unused data
-        this.meshes.boxMesh.prepare();
-
-
         // To monitor performance (fps)
         if (Orbium.app.debug) {
+            var canvas = CubicVR.getCanvas();
             this.stats = new Stats();
             this.stats.domElement.style.position = 'absolute';
             this.stats.domElement.style.top = 5;
             this.stats.domElement.style.left = canvas.width - 100;
             world.getEl().appendChild(this.stats.domElement);
         }
-
         // Right button detection to activate body menu.
 //        container.on({
 //            click: me.selectBody,
@@ -129,14 +154,21 @@ Ext.define('Orbium.world.World', {
 
     },
     initPhysicsWorld: function() {
-        this.timeStep = 1 / 60;
-        this.physicsWorld = new CANNON.World();
-        this.physicsWorld.gravity.set(0, -9.8, 0);
-        this.physicsWorld.broadphase = new CANNON.NaiveBroadphase();
-        this.physicsWorld.solver.iterations = 10;
+        this.physicsWorld = new CubicVR.ScenePhysics();
 
-        this.physicsWorld.defaultContactMaterial.contactEquationStiffness = 1e7;
-        this.physicsWorld.defaultContactMaterial.contactEquationRegularizationTime = 4;
+    },
+    startMainLoop: function() {
+        var me = this;
+        // Start our main drawing loop, it provides a timer and the gl context as parameters
+        CubicVR.MainLoop(function(timer, gl) {
+            var seconds = timer.getSeconds();
+
+            me.physicsWorld.stepSimulation(timer.getLastUpdateSeconds());
+            // perform any per-frame operations here
+            // perform any drawing operations here
+            me.scene.render();
+        });
+
     },
     render: function() {
         var toolbarBodies = Ext.ComponentQuery.query('orbiumtoolbarbodies');
@@ -210,13 +242,18 @@ Ext.define('Orbium.world.World', {
         this.fireEvent("pauseAnimation");
     },
     addBody: function(body) {
-
+        console.log(body);
         this.bodyStore.add(body);
-        //this.physicsWorld.add(body.physics);        
+        //this.physicsWorld.add(body.physics);           
         this.scene.bind(body.mesh);
-
-        console.log(this);
-        //this.renderer.render(this.scene, this.camera);
+         var physics = new CubicVR.RigidBody(body.mesh, {
+            type: CubicVR.enums.physics.body.DYNAMIC,
+            collision: {
+                type: CubicVR.enums.collision.shape.BOX,
+                size: body.mesh.scale
+            }
+        });
+        this.physicsWorld.bindRigidBody(physics);
     },
     addGroundPlane: function(body) {
 

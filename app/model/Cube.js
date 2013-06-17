@@ -18,13 +18,16 @@ Ext.define('Orbium.model.Cube', {
         this.setPhysicParams();
     },
     createMeshBody: function() {
-
+    
+        var me = this;
+        
         this.mesh = new CubicVR.SceneObject({
             mesh: Orbium.app.mundo.meshes.boxMesh,
             scale: [this.data.geometry_width, this.data.geometry_height, this.data.geometry_depth],
             position: [this.data.position_x, this.data.position_y, this.data.position_z],
             rotation: [0, 0, 0]
-        });
+        });        
+        
     }
 });
 

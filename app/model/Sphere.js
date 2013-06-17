@@ -16,9 +16,13 @@ Ext.define('Orbium.model.Sphere', {
 
     },
     createMeshBody: function() {
-        var geometry = new THREE.SphereGeometry(this.data.geometry_radius, 20, 20);
-
-        this.createMeshFromGeometry(geometry);
+        this.mesh = new CubicVR.SceneObject(
+                {
+                    mesh: Orbium.app.mundo.meshes.sphereMesh,
+                    scale: [this.data.geometry_radius, this.data.geometry_radius, this.data.geometry_radius],
+                    position: [this.data.position_x, this.data.position_y, this.data.position_z]
+                }
+        );
     }
 });
 

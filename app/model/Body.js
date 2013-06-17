@@ -39,9 +39,9 @@ Ext.define('Orbium.model.Body', {
         this.physics = {}; // Object for physics (ammo.js) info
         this.mesh = {};    // Object for mesh (cubicvr.js) info         
     },
-    createPhysicAndMeshBodies: function() {
-        //this.createPhysicBody();
+    createPhysicAndMeshBodies: function() {        
         this.createMeshBody();
+        //this.createPhysicBody();
         //this.sincroPosition();
     },
     updatePhysicsAndMeshBodies: function(){
