@@ -2,7 +2,12 @@ Ext.define('Orbium.world.World', {
     bodies: [],
     worldStatus: "STOPPED",
     extend: 'Ext.util.Observable',
+//    listeners: {
+//        
+//    },
     constructor: function(world) {
+
+        var me = this;
 
         this.callParent();
 
@@ -16,7 +21,7 @@ Ext.define('Orbium.world.World', {
         this.initPhysicsWorld();
         this.startMainLoop();
         this.loop.setPaused(true);
-        
+
         // This is to store the bodies added to the world
         this.bodyStore = Ext.create('Ext.data.Store', {
             model: 'Orbium.model.Body',
@@ -24,6 +29,12 @@ Ext.define('Orbium.world.World', {
                 type: 'localstorage',
                 id: 'bodies'
             }
+        });
+
+        this.on({
+            startAnimation: me.disableToolbarBody,
+            stopAnimation: me.enableToolbarBody,
+            pauseAnimation: me.disableToolbarBody
         });
 
     },
@@ -145,18 +156,20 @@ Ext.define('Orbium.world.World', {
             world.getEl().appendChild(this.stats.domElement);
         }
         // Right button detection to activate body menu.
-//        container.on({
-//            click: me.selectBody,
-//            contextmenu: me.showBodyContexMenu,
+//        world.getEl().on({
+////            click: me.selectBody,
+//            //contextmenu: me.showBodyContexMenu,
+//            click: me.kk,
+//            startAnimation: me.kk,
 //            scope: this// Important. Ensure "this" is correct during handler execution
 //
 //        });
+
 //        Ext.EventManager.onWindowResize(this.onWindowResize, this);
 
     },
     initPhysicsWorld: function() {
         this.physicsWorld = new CubicVR.ScenePhysics();
-
     },
     startMainLoop: function() {
         var me = this;
@@ -170,54 +183,18 @@ Ext.define('Orbium.world.World', {
             // perform any drawing operations here
             me.scene.render();
 
-            if (this.stats) {
-                this.stats.update();
+            if (me.stats) {
+                me.stats.update();
             }
         });
     },
-    render: function() {
+    enableToolbarBody: function() {
         var toolbarBodies = Ext.ComponentQuery.query('orbiumtoolbarbodies');
-
-        if (this.worldStatus != "STOPPED") {
-            toolbarBodies[0].disable();
-        } else {
-            toolbarBodies[0].enable();
-        }
-
-        //Orbium.app.consoleLog("requestAnimationId: " + this.requestAnimationId);
-        //Orbium.app.consoleLog("stepnumber: " + this.physicsWorld.time);
-        this.renderer.render(this.scene, this.camera);
+        toolbarBodies[0].enable();
     },
-    updatePhysics: function() {
-        // Step the physics world
-        this.physicsWorld.step(this.timeStep);
-
-        // Copy coordinates from Cannon.js to Three.js
-        this.bodyStore.each(function() {
-            this.physics.position.copy(this.mesh.position);
-            this.physics.quaternion.copy(this.mesh.quaternion);
-        });
-    },
-    animate: function() {
-
-        this.requestAnimationId = requestAnimationFrame(this.animate.bind(this));
-
-        this.updatePhysics();
-        this.render();
-
-        if (this.stats) {
-            this.stats.update();
-        }
-
-        // deltaCamera tunning to get a camera constant velocity
-//        var time;
-//        var now = new Date().getTime();
-//
-//        this.repeat = now - (time || now);
-//        time = now;
-//
-//        this.deltaCamera = this.veloCamara * this.repeat / 10;
-
+    disableToolbarBody: function() {
+        var toolbarBodies = Ext.ComponentQuery.query('orbiumtoolbarbodies');
+        toolbarBodies[0].disable();
     },
     startAnimation: function() {
         this.loop.setPaused(false);
@@ -225,24 +202,19 @@ Ext.define('Orbium.world.World', {
         this.fireEvent("startAnimation");
     },
     stopAnimation: function() {
-        
-        this.loop.setPaused(true);
-        this.physicsWorld.stepSimulation(0);
-        
-        
-//        this.loop.setTimerSeconds(0);
-        
-        //this.loop.setPaused(true);
 
-//        this.bodyStore.each(function() {
-//            this.setPhysicParams();
-//            this.physics.initQuaternion.copy(this.physics.quaternion);
-//            this.physics.quaternion.copy(this.mesh.quaternion);
-//        });
+        this.loop.setPaused(true);
+
+        this.bodyStore.each(function() {
+            this.physics.setPosition([this.data.position_x, this.data.position_y, this.data.position_z]);
+            this.physics.setLinearVelocity([this.data.velocity_x, this.data.velocity_y, this.data.velocity_z]);
+            this.mesh.position = [this.data.position_x, this.data.position_y, this.data.position_z];
+        });
+
+        this.scene.render();
 
         this.worldStatus = "STOPPED";
-//        this.updatePhysics();
-//        this.render();
+
         this.fireEvent("stopAnimation");
     },
     pauseAnimation: function() {

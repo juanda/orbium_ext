@@ -14,7 +14,6 @@ Ext.define('Orbium.view.World', {
         tag: 'div',
         cls: 'world'
     },
-       
     onRender: function() {
         this.callParent();
 
