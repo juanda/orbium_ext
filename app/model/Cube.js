@@ -26,7 +26,15 @@ Ext.define('Orbium.model.Cube', {
             scale: [this.data.geometry_width, this.data.geometry_height, this.data.geometry_depth],
             position: [this.data.position_x, this.data.position_y, this.data.position_z],
             rotation: [0, 0, 0]
-        });        
+        });
+        
+        this.physics = new CubicVR.RigidBody(me.mesh, {
+            type: CubicVR.enums.physics.body.DYNAMIC,
+            collision: {
+                type: CubicVR.enums.collision.shape.BOX,
+                size: me.mesh.scale
+            }
+        });
         
     }
 });

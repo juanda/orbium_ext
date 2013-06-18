@@ -246,14 +246,8 @@ Ext.define('Orbium.world.World', {
         this.bodyStore.add(body);
         //this.physicsWorld.add(body.physics);           
         this.scene.bind(body.mesh);
-         var physics = new CubicVR.RigidBody(body.mesh, {
-            type: CubicVR.enums.physics.body.DYNAMIC,
-            collision: {
-                type: CubicVR.enums.collision.shape.BOX,
-                size: body.mesh.scale
-            }
-        });
-        this.physicsWorld.bindRigidBody(physics);
+        
+        this.physicsWorld.bindRigidBody(body.physics);
     },
     addGroundPlane: function(body) {
 

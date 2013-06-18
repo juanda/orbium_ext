@@ -16,6 +16,8 @@ Ext.define('Orbium.model.Sphere', {
 
     },
     createMeshBody: function() {
+        
+        var me = this;
         this.mesh = new CubicVR.SceneObject(
                 {
                     mesh: Orbium.app.mundo.meshes.sphereMesh,
@@ -23,6 +25,13 @@ Ext.define('Orbium.model.Sphere', {
                     position: [this.data.position_x, this.data.position_y, this.data.position_z]
                 }
         );
+        this.physics = new CubicVR.RigidBody(me.mesh, {
+            type: CubicVR.enums.physics.body.DYNAMIC,
+            collision: {
+                type: CubicVR.enums.collision.shape.BOX,
+                size: me.mesh.scale
+            }
+        });
     }
 });
 
