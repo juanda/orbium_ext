@@ -35,12 +35,12 @@ Ext.define('Orbium.model.Body', {
     constructor: function() {
 
         this.callParent();
-        
+
         this.physics = {}; // Object for physics (ammo.js) info
         this.mesh = {};    // Object for mesh (cubicvr.js) info         
     },
-    updatePhysicsAndMeshBodies: function(){
-        
+    updatePhysicsAndMeshBodies: function() {
+
         // the solution to update the physics and mesh bodies
         // asociated to the body is:
         // - 1, remove the body from the world/scene
@@ -52,8 +52,8 @@ Ext.define('Orbium.model.Body', {
         Orbium.app.mundo.physicsWorld.remove(this.physics);
         Orbium.app.mundo.scene.remove(this.mesh);
 
-        this.physics  = {};
-        this.mesh     = {};
+        this.physics = {};
+        this.mesh = {};
 
         this.createBody();
 
@@ -80,6 +80,11 @@ Ext.define('Orbium.model.Body', {
         this.physics.angularDamping = this.data.physicParams_angularDamping;
         this.physics.linearDamping = 0;
 
+    },
+    reset: function() {
+        this.physics.setPosition([this.data.position_x, this.data.position_y, this.data.position_z]);
+        this.physics.setLinearVelocity([this.data.velocity_x, this.data.velocity_y, this.data.velocity_z]);
+        this.mesh.position = [this.data.position_x, this.data.position_y, this.data.position_z];
     }
 });
 

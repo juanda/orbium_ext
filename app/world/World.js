@@ -1,18 +1,10 @@
 Ext.define('Orbium.world.World', {
-    bodies: [],
-    worldStatus: "STOPPED",
     extend: 'Ext.util.Observable',
-//    listeners: {
-//        
-//    },
     constructor: function(world) {
 
         var me = this;
 
         this.callParent();
-
-        // These events aren't use yet
-        this.addEvents("startAnimation", "pauseAnimation", "stopAnimation");
 
         this.bodyMenu = Ext.create('Orbium.view.BodyMenu');
 
@@ -30,6 +22,9 @@ Ext.define('Orbium.world.World', {
                 id: 'bodies'
             }
         });
+
+        // Animation events
+        this.addEvents("startAnimation", "pauseAnimation", "stopAnimation");
 
         this.on({
             startAnimation: me.disableToolbarBody,
@@ -110,13 +105,11 @@ Ext.define('Orbium.world.World', {
         }
         ;
 
-        // Get the DOM Element of the world
-        //var container = worldContainer;
+        // Get the DOM Element of the world        
         var canvas = CubicVR.getCanvas();
         world.getEl().appendChild(canvas);
 
         // New scene with our canvas dimensions and camera with FOV 80
-
         var camera = new CubicVR.Camera({
             name: "the_camera",
             fov: 80.0,
@@ -127,7 +120,6 @@ Ext.define('Orbium.world.World', {
         });
 
         // Create the Light
-
         var light = new CubicVR.Light({
             type: CubicVR.enums.light.type.DIRECTIONAL,
             specular: [1, 1, 1],
@@ -164,9 +156,6 @@ Ext.define('Orbium.world.World', {
 //            scope: this// Important. Ensure "this" is correct during handler execution
 //
 //        });
-
-//        Ext.EventManager.onWindowResize(this.onWindowResize, this);
-
     },
     initPhysicsWorld: function() {
         this.physicsWorld = new CubicVR.ScenePhysics();
@@ -183,6 +172,7 @@ Ext.define('Orbium.world.World', {
             // perform any drawing operations here
             me.scene.render();
 
+            // Update status monitor
             if (me.stats) {
                 me.stats.update();
             }
@@ -198,46 +188,27 @@ Ext.define('Orbium.world.World', {
     },
     startAnimation: function() {
         this.loop.setPaused(false);
-        this.worldStatus = "RUNNING";
         this.fireEvent("startAnimation");
     },
     stopAnimation: function() {
-
         this.loop.setPaused(true);
 
         this.bodyStore.each(function() {
-            this.physics.setPosition([this.data.position_x, this.data.position_y, this.data.position_z]);
-            this.physics.setLinearVelocity([this.data.velocity_x, this.data.velocity_y, this.data.velocity_z]);
-            this.mesh.position = [this.data.position_x, this.data.position_y, this.data.position_z];
+            this.reset(); // this is each body in the store
         });
 
-        this.scene.render();
-
-        this.worldStatus = "STOPPED";
+        this.scene.render();       
 
         this.fireEvent("stopAnimation");
     },
     pauseAnimation: function() {
-        this.loop.setPaused(true);
-        this.worldStatus = "PAUSED";
+        this.loop.setPaused(true);        
         this.fireEvent("pauseAnimation");
     },
     addBody: function(body) {
-        console.log(body);
-        this.bodyStore.add(body);
-        //this.physicsWorld.add(body.physics);           
+        this.bodyStore.add(body);       
         this.scene.bind(body.mesh);
-
         this.physicsWorld.bindRigidBody(body.physics);
-    },
-    addGroundPlane: function(body) {
-
-        //this.bodyStore.add(body);
-        this.physicsWorld.add(body.physics);
-        this.scene.add(body.mesh);
-
-        console.log(this);
-        this.renderer.render(this.scene, this.camera);
     },
     indexOfBodyWithMeshId: function(id) {
         // id is a body mesh index
@@ -319,15 +290,5 @@ Ext.define('Orbium.world.World', {
 
         this.bodyMenu.setPagePosition(this.itemSelected.mouseX, this.itemSelected.mouseY);
         this.bodyMenu.show();
-    },
-    onWindowResize: function() {
-
-        this.camera.aspect = window.innerWidth / window.innerHeight;
-        this.camera.updateProjectionMatrix();
-
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-
-        this.renderer.render(this.scene, this.camera);
-
     }
 });
