@@ -3,19 +3,7 @@ Ext.define('Orbium.model.Sphere', {
     fields: [
         {name: 'geometry_radius', type: 'number'}
     ],
-    createPhysicBody: function() {
-
-        //var m = this.cannonToThreeMultiplier;
-
-        var shape = new CANNON.Sphere(this.data.geometry_radius /* m*/);
-
-        // Shape on plane       
-        this.physics = new CANNON.RigidBody(this.data.physicParams_mass, shape);
-
-        this.setPhysicParams();
-
-    },
-    createMeshBody: function() {
+    createBody: function() {
         
         var me = this;
         this.mesh = new CubicVR.SceneObject(

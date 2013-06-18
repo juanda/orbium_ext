@@ -15,7 +15,8 @@ Ext.define('Orbium.world.World', {
         this.createMaterialsAndMeshes();
         this.initPhysicsWorld();
         this.startMainLoop();
-
+        this.loop.setPaused(true);
+        
         // This is to store the bodies added to the world
         this.bodyStore = Ext.create('Ext.data.Store', {
             model: 'Orbium.model.Body',
@@ -160,15 +161,19 @@ Ext.define('Orbium.world.World', {
     startMainLoop: function() {
         var me = this;
         // Start our main drawing loop, it provides a timer and the gl context as parameters
-        CubicVR.MainLoop(function(timer, gl) {
+        this.loop = CubicVR.MainLoop(function(timer, gl) {
             var seconds = timer.getSeconds();
 
-            me.physicsWorld.stepSimulation(timer.getLastUpdateSeconds());
+            if (!timer.paused_state)
+                me.physicsWorld.stepSimulation(timer.getLastUpdateSeconds());
             // perform any per-frame operations here
             // perform any drawing operations here
             me.scene.render();
-        });
 
+            if (this.stats) {
+                this.stats.update();
+            }
+        });
     },
     render: function() {
         var toolbarBodies = Ext.ComponentQuery.query('orbiumtoolbarbodies');
@@ -215,29 +220,33 @@ Ext.define('Orbium.world.World', {
 
     },
     startAnimation: function() {
-        this.animate();
+        this.loop.setPaused(false);
         this.worldStatus = "RUNNING";
         this.fireEvent("startAnimation");
     },
     stopAnimation: function() {
-        cancelAnimationFrame(this.requestAnimationId);
+        
+        this.loop.setPaused(true);
+        this.physicsWorld.stepSimulation(0);
+        
+        
+//        this.loop.setTimerSeconds(0);
+        
+        //this.loop.setPaused(true);
 
-        console.log(this);
-        // Reset world state
-
-        this.bodyStore.each(function() {
-            this.setPhysicParams();
-            this.physics.initQuaternion.copy(this.physics.quaternion);
-            this.physics.quaternion.copy(this.mesh.quaternion);
-        });
+//        this.bodyStore.each(function() {
+//            this.setPhysicParams();
+//            this.physics.initQuaternion.copy(this.physics.quaternion);
+//            this.physics.quaternion.copy(this.mesh.quaternion);
+//        });
 
         this.worldStatus = "STOPPED";
-        this.updatePhysics();
-        this.render();
+//        this.updatePhysics();
+//        this.render();
         this.fireEvent("stopAnimation");
     },
     pauseAnimation: function() {
-        cancelAnimationFrame(this.requestAnimationId);
+        this.loop.setPaused(true);
         this.worldStatus = "PAUSED";
         this.fireEvent("pauseAnimation");
     },
@@ -246,7 +255,7 @@ Ext.define('Orbium.world.World', {
         this.bodyStore.add(body);
         //this.physicsWorld.add(body.physics);           
         this.scene.bind(body.mesh);
-        
+
         this.physicsWorld.bindRigidBody(body.physics);
     },
     addGroundPlane: function(body) {

@@ -9,7 +9,7 @@
  * must implement the following methods:
  *
  * - createPhysicBody
- * - createMeshBody
+ * - createBody
  * 
  * See Orbium.model.Cube implementation to get
  * an example.
@@ -39,11 +39,6 @@ Ext.define('Orbium.model.Body', {
         this.physics = {}; // Object for physics (ammo.js) info
         this.mesh = {};    // Object for mesh (cubicvr.js) info         
     },
-    createPhysicAndMeshBodies: function() {        
-        this.createMeshBody();
-        //this.createPhysicBody();
-        //this.sincroPosition();
-    },
     updatePhysicsAndMeshBodies: function(){
         
         // the solution to update the physics and mesh bodies
@@ -60,7 +55,7 @@ Ext.define('Orbium.model.Body', {
         this.physics  = {};
         this.mesh     = {};
 
-        this.createPhysicAndMeshBodies();
+        this.createBody();
 
         Orbium.app.mundo.physicsWorld.add(this.physics);
         Orbium.app.mundo.scene.add(this.mesh);
@@ -85,11 +80,6 @@ Ext.define('Orbium.model.Body', {
         this.physics.angularDamping = this.data.physicParams_angularDamping;
         this.physics.linearDamping = 0;
 
-    },
-    // sincronize mesh and physics position
-    sincroPosition: function() {
-        this.physics.position.copy(this.mesh.position);
-        //this.physics.quaternion.copy(this.mesh.quaternion);
     }
 });
 
