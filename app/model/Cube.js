@@ -24,6 +24,7 @@ Ext.define('Orbium.model.Cube', {
             }
         });
         
+         this.setInitParams();
     }
 });
 

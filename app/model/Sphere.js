@@ -4,7 +4,7 @@ Ext.define('Orbium.model.Sphere', {
         {name: 'geometry_radius', type: 'number'}
     ],
     createBody: function() {
-        
+
         var me = this;
         this.mesh = new CubicVR.SceneObject(
                 {
@@ -20,6 +20,8 @@ Ext.define('Orbium.model.Sphere', {
                 size: me.mesh.scale
             }
         });
+
+        this.setInitParams();
     }
 });
 

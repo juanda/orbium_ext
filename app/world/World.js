@@ -40,6 +40,12 @@ Ext.define('Orbium.world.World', {
                 color: new CubicVR.Texture("images/6583-diffuse.jpg")
             }
         });
+        
+        var materialWallSelected = new CubicVR.Material({
+            textures: {
+                color: new CubicVR.Texture("images/2282-diffuse.jpg")
+            }
+        });
 
         // Add a box to mesh, size 1.0, apply material and UV parameters
         var boxMesh = CubicVR.primitives.box({
@@ -48,11 +54,23 @@ Ext.define('Orbium.world.World', {
             uvmapper: {
                 projectionMode: CubicVR.enums.uv.projection.CUBIC,
                 scale: [1, 1, 1]
-            }
+            },
+            compile: true
+        });
+        
+        var boxMeshSelected = CubicVR.primitives.box({
+            size: 1.0,
+            material: materialWallSelected,
+            uvmapper: {
+                projectionMode: CubicVR.enums.uv.projection.CUBIC,
+                scale: [1, 1, 1]
+            },
+            compile: true
         });
 
         // triangulate and buffer object to GPU, remove unused data
         boxMesh.prepare();
+        boxMeshSelected.prepare();
 
         var sphereMesh = new CubicVR.Mesh({
             primitive: {
@@ -89,7 +107,8 @@ Ext.define('Orbium.world.World', {
         // Create the Box Mesh
         this.meshes = {
             boxMesh: boxMesh,
-            sphereMesh: sphereMesh
+            sphereMesh: sphereMesh,
+            boxMeshSelected: boxMeshSelected
         };
 
     },
@@ -136,7 +155,7 @@ Ext.define('Orbium.world.World', {
         CubicVR.addResizeable(camera);
 
         // initialize a mouse view controller
-        mvc = new CubicVR.MouseViewController(canvas, this.scene.camera);
+        this.mvc = new CubicVR.MouseViewController(canvas, this.scene.camera);
 
         // To monitor performance (fps)
         if (Orbium.app.debug) {
@@ -148,14 +167,12 @@ Ext.define('Orbium.world.World', {
             world.getEl().appendChild(this.stats.domElement);
         }
         // Right button detection to activate body menu.
-//        world.getEl().on({
-////            click: me.selectBody,
-//            //contextmenu: me.showBodyContexMenu,
-//            click: me.kk,
-//            startAnimation: me.kk,
-//            scope: this// Important. Ensure "this" is correct during handler execution
-//
-//        });
+        world.getEl().on({
+            click: me.selectBody,
+            //contextmenu: me.showBodyContexMenu,            
+            scope: this// Important. Ensure "this" is correct during handler execution
+
+        });
     },
     initPhysicsWorld: function() {
         this.physicsWorld = new CubicVR.ScenePhysics();
@@ -194,20 +211,20 @@ Ext.define('Orbium.world.World', {
         this.loop.setPaused(true);
 
         this.bodyStore.each(function() {
-            this.reset(); // this is each body in the store
+            this.setInitParams(); // this is each body in the store
         });
 
-        this.scene.render();       
+        this.scene.render();
 
         this.fireEvent("stopAnimation");
     },
     pauseAnimation: function() {
-        this.loop.setPaused(true);        
+        this.loop.setPaused(true);
         this.fireEvent("pauseAnimation");
     },
     addBody: function(body) {
-        this.bodyStore.add(body);       
-        this.scene.bind(body.mesh);
+        this.bodyStore.add(body);
+        this.scene.bind(body.mesh, true); // second argument = pickable
         this.physicsWorld.bindRigidBody(body.physics);
     },
     indexOfBodyWithMeshId: function(id) {
@@ -225,70 +242,27 @@ Ext.define('Orbium.world.World', {
         return indexBody;
     },
     selectBody: function(e) {
+       
+        var me = this;
 
-        // e.browserEvent.clientX goes from 0 to window.innerWidth and
-        // e.browserEvent.clientY goes from 0 to window.innerHeight, so
-        // mouse.x goes from -1 to 1 and the same for mouse.y
-        // The mouse position must be corrected by the canvas offset due
-        // to other dom elements (like the toolbar). The correction are
-        // this.renderer.domElement.offsetLeft and this.renderer.domElement.offsetTop
-        mouse = {
-            x: ((e.browserEvent.clientX - this.renderer.domElement.offsetLeft) / window.innerWidth) * 2 - 1,
-            y: -((e.browserEvent.clientY - this.renderer.domElement.offsetTop) / window.innerHeight) * 2 + 1
-        };
+        var rayTest = me.scene.bbRayTest(me.scene.camera.position, me.mvc.getMousePosition(), 3);
 
-        var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-        this.projector.unprojectVector(vector, this.camera);
-
-        var raycaster = new THREE.Raycaster(this.camera.position, vector.sub(this.camera.position).normalize());
-
-        var intersects = raycaster.intersectObjects(this.scene.children);
-
-        if (intersects.length > 0) {
-
-            var intersected = intersects[ 0 ].object;
-
-            // Revert color to old selected body
-
-            if (this.itemSelected) {
-                this.itemSelected.material.color.setHex(0xff0000);
-            }
-            if (this.itemSelected && intersected.id !== this.itemSelected.id
-                    || !this.itemSelected) {
-                this.itemSelected = intersected;
-                this.itemSelected.material.color.setHex(0x000000);
-
-                this.itemSelected.mouseX = e.browserEvent.clientX;
-                this.itemSelected.mouseY = e.browserEvent.clientY;
-            } else {
-                this.itemSelected = null;
-            }
-
-            this.renderer.render(this.scene, this.camera);
-
-//            if (this.intersected != intersects[ 0 ].object) {
-//
-//                if (this.intersected)
-//                    this.intersected.material.emissive.setHex(this.intersected.currentHex);
-//
-//                this.intersected = intersects[ 0 ].object;
-//                this.intersected.currentHex = this.intersected.material.emissive.getHex();
-//                this.intersected.material.emissive.setHex(0xff0000);
-
-//            }
-
-        } else {
-
-            this.intersected = null;
-
-        }
+        me.objectSelected = null;
+        
+        if (rayTest.length > 0) {
+            //alert('kuku');
+            me.objectSelected = rayTest[0];
+            console.log(me.objectSelected);
+            var envTex =  new CubicVR.Texture("images/water.jpg");
+            me.objectSelected.obj.getMesh().materials[0].setTexture(envTex);
+        } 
     },
     showBodyContexMenu: function(e) {
 
-        if (!this.itemSelected)
+        if (!this.objectSelected)
             return;
 
-        this.bodyMenu.setPagePosition(this.itemSelected.mouseX, this.itemSelected.mouseY);
+        this.bodyMenu.setPagePosition(this.objectSelected.mouseX, this.objectSelected.mouseY);
         this.bodyMenu.show();
     }
 });

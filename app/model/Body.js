@@ -81,10 +81,11 @@ Ext.define('Orbium.model.Body', {
         this.physics.linearDamping = 0;
 
     },
-    reset: function() {
+    setInitParams: function() {
+        this.mesh.position = [this.data.position_x, this.data.position_y, this.data.position_z];
         this.physics.setPosition([this.data.position_x, this.data.position_y, this.data.position_z]);
         this.physics.setLinearVelocity([this.data.velocity_x, this.data.velocity_y, this.data.velocity_z]);
-        this.mesh.position = [this.data.position_x, this.data.position_y, this.data.position_z];
+
     }
 });
 
