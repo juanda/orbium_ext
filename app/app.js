@@ -19,7 +19,7 @@ Ext.application({
     debug: true,
     launch: function() {
         // Removes the contexmenu associated to the right button
-        //Ext.getBody().on("contextmenu", Ext.emptyFn, null, {preventDefault: true});
+        Ext.getBody().on("contextmenu", Ext.emptyFn, null, {preventDefault: true});
 
         Ext.create('Orbium.view.Viewport');
         

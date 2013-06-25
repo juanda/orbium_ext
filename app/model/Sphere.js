@@ -8,7 +8,7 @@ Ext.define('Orbium.model.Sphere', {
         var me = this;
         this.mesh = new CubicVR.SceneObject(
                 {
-                    mesh: Orbium.app.mundo.meshes.sphereMesh,
+                    mesh: Orbium.app.mundo.sphereMesh(),
                     scale: [this.data.geometry_radius, this.data.geometry_radius, this.data.geometry_radius],
                     position: [this.data.position_x, this.data.position_y, this.data.position_z]
                 }

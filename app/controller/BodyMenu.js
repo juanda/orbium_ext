@@ -14,8 +14,8 @@ Ext.define('Orbium.controller.BodyMenu', {
             },
             'orbiumbodymenu > menuitem#change_properties': {
                 click: function(menuitem) {
-                    var kbody = Orbium.app.mundo.indexOfBodyWithMeshId(Orbium.app.mundo.itemSelected.id);
-                                        
+                    var kbody = Orbium.app.mundo.objectSelected.obj.kbody;                                        
+                    
                     var form;
                     var className = Ext.getClassName(Orbium.app.mundo.bodyStore.getAt(kbody));
                     switch (className) {

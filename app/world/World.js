@@ -34,81 +34,68 @@ Ext.define('Orbium.world.World', {
 
     },
     createMaterialsAndMeshes: function() {
+
+        var texture = new CubicVR.Texture("images/2282-diffuse.jpg");
+        var textureSelected = new CubicVR.Texture("images/4734-diffuse.jpg");
         // Create a material for the mesh
         var materialWall = new CubicVR.Material({
             textures: {
-                color: new CubicVR.Texture("images/6583-diffuse.jpg")
-            }
-        });
-        
-        var materialWallSelected = new CubicVR.Material({
-            textures: {
-                color: new CubicVR.Texture("images/2282-diffuse.jpg")
+                color: texture
             }
         });
 
         // Add a box to mesh, size 1.0, apply material and UV parameters
-        var boxMesh = CubicVR.primitives.box({
-            size: 1.0,
-            material: materialWall,
-            uvmapper: {
-                projectionMode: CubicVR.enums.uv.projection.CUBIC,
-                scale: [1, 1, 1]
-            },
-            compile: true
-        });
-        
-        var boxMeshSelected = CubicVR.primitives.box({
-            size: 1.0,
-            material: materialWallSelected,
-            uvmapper: {
-                projectionMode: CubicVR.enums.uv.projection.CUBIC,
-                scale: [1, 1, 1]
-            },
-            compile: true
-        });
 
-        // triangulate and buffer object to GPU, remove unused data
-        boxMesh.prepare();
-        boxMeshSelected.prepare();
-
-        var sphereMesh = new CubicVR.Mesh({
-            primitive: {
-                type: "sphere",
-                radius: 1,
-                lat: 24,
-                lon: 24,
-                material: {
-                    color: [80 / 255, 200 / 255, 120 / 255],
-                    specular: [1, 1, 1],
-                    shininess: 0.9,
-                    env_amount: 1.0,
-                    textures: {
-                        color: "images/2576-diffuse.jpg",
-                        normal: "images/2576-normal.jpg",
-                        bump: "images/2576-bump.jpg",
-                        envsphere: "images/fract_reflections.jpg"
+        this.boxMesh = function() {
+            var boxMesh = new CubicVR.Mesh({
+                primitive: {
+                    type: "box",
+                    size: 1,
+                    material: {
+                        textures: {
+                            color: texture
+                        }
+                    },
+                    uv: {
+                        projectionMode: CubicVR.enums.uv.projection.CUBIC,
                     }
                 },
-                uv: {
-                    projectionMode: "spherical",
-                    projectionAxis: "y",
-                    wrapW: 5,
-                    wrapH: 2.5
-                }
-            },
-            compile: true
-        });
+                compile: true
+            });
+            // triangulate and buffer object to GPU, remove unused data
+            boxMesh.prepare();
+            return boxMesh;
+        };
 
-        sphereMesh.prepare();
+        this.sphereMesh = function() {
+            var sphereMesh = new CubicVR.Mesh({
+                primitive: {
+                    type: "sphere",
+                    radius: 1,
+                    lat: 24,
+                    lon: 24,
+                    material: {
+                        textures: {
+                            color: texture
+                        }
+                    },
+                    uv: {
+                        projectionMode: "spherical",
+                        projectionAxis: "y",
+                        wrapW: 5,
+                        wrapH: 2.5
+                    }
+                },
+                compile: true
+            });
 
-
-        //Create several meshes to use when adding bodies
-        // Create the Box Mesh
-        this.meshes = {
-            boxMesh: boxMesh,
-            sphereMesh: sphereMesh,
-            boxMeshSelected: boxMeshSelected
+            sphereMesh.prepare();
+            
+            return sphereMesh;
+        };
+        this.textures = {
+            normal: texture,
+            selected: textureSelected
         };
 
     },
@@ -169,7 +156,7 @@ Ext.define('Orbium.world.World', {
         // Right button detection to activate body menu.
         world.getEl().on({
             click: me.selectBody,
-            //contextmenu: me.showBodyContexMenu,            
+            contextmenu: me.showBodyContexMenu,
             scope: this// Important. Ensure "this" is correct during handler execution
 
         });
@@ -224,45 +211,41 @@ Ext.define('Orbium.world.World', {
     },
     addBody: function(body) {
         this.bodyStore.add(body);
+        body.mesh.kbody = this.bodyStore.indexOf(body);
+
         this.scene.bind(body.mesh, true); // second argument = pickable
         this.physicsWorld.bindRigidBody(body.physics);
     },
-    indexOfBodyWithMeshId: function(id) {
-        // id is a body mesh index
-
-        var indexBody = null;
-
-        var me = this;
-        this.bodyStore.each(function() {
-            if (this.mesh.id === id) {
-                indexBody = me.bodyStore.indexOf(this);
-            }
-        });
-
-        return indexBody;
-    },
     selectBody: function(e) {
-       
+
         var me = this;
 
         var rayTest = me.scene.bbRayTest(me.scene.camera.position, me.mvc.getMousePosition(), 3);
 
-        me.objectSelected = null;
-        
+
+        var changeTexture = true;
         if (rayTest.length > 0) {
-            //alert('kuku');
-            me.objectSelected = rayTest[0];
-            console.log(me.objectSelected);
-            var envTex =  new CubicVR.Texture("images/water.jpg");
-            me.objectSelected.obj.getMesh().materials[0].setTexture(envTex);
-        } 
+            if (me.objectSelected) {
+                me.objectSelected.obj.getMesh().materials[0].setTexture(this.textures.normal);
+
+                if (me.objectSelected.obj === rayTest[0].obj)
+                    changeTexture = false;
+            }
+            me.objectSelected = null;
+            if (changeTexture) {
+
+                me.objectSelected = rayTest[0];
+                me.objectSelected.obj.mousePosition = me.mvc.getMousePosition();
+                me.objectSelected.obj.getMesh().materials[0].setTexture(this.textures.selected);
+            }
+        }
     },
     showBodyContexMenu: function(e) {
 
         if (!this.objectSelected)
             return;
-
-        this.bodyMenu.setPagePosition(this.objectSelected.mouseX, this.objectSelected.mouseY);
+        
+        this.bodyMenu.setPagePosition(this.objectSelected.obj.mousePosition[0], this.objectSelected.obj.mousePosition[1]);
         this.bodyMenu.show();
     }
 });

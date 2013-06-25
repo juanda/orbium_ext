@@ -49,37 +49,11 @@ Ext.define('Orbium.model.Body', {
         // - 4, render the world
 
         // remove the physics body from the physics World
-        Orbium.app.mundo.physicsWorld.remove(this.physics);
-        Orbium.app.mundo.scene.remove(this.mesh);
-
-        this.physics = {};
-        this.mesh = {};
-
-        this.createBody();
-
-        Orbium.app.mundo.physicsWorld.add(this.physics);
-        Orbium.app.mundo.scene.add(this.mesh);
-
-        Orbium.app.mundo.render();
-    },
-    // Set common physics params from model to cannon.js object
-    setPhysicParams: function() {
-
-        this.physics.position.x = this.data.position_x;
-        this.physics.position.y = this.data.position_y;
-        this.physics.position.z = this.data.position_z;
-
-        this.physics.velocity.x = this.data.velocity_x;
-        this.physics.velocity.y = this.data.velocity_y;
-        this.physics.velocity.z = this.data.velocity_z;
-
-        this.physics.angularVelocity.x = this.data.angularVelocity_x;
-        this.physics.angularVelocity.y = this.data.angularVelocity_y;
-        this.physics.angularVelocity.z = this.data.angularVelocity_z;
-
-        this.physics.angularDamping = this.data.physicParams_angularDamping;
-        this.physics.linearDamping = 0;
-
+        
+        console.log(this);        
+        this.setInitParams();
+        
+        Orbium.app.mundo.scene.render();
     },
     setInitParams: function() {
         this.mesh.position = [this.data.position_x, this.data.position_y, this.data.position_z];
