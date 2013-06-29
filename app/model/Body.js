@@ -55,11 +55,16 @@ Ext.define('Orbium.model.Body', {
         
         Orbium.app.mundo.scene.render();
     },
-    setInitParams: function() {
+    setInitParams: function() {        
+        var quat = new CubicVR.Quaternion();
+        quat.fromEuler(0,0,0);
+        this.physics.setMass(this.data.physicParams_mass);
         this.mesh.position = [this.data.position_x, this.data.position_y, this.data.position_z];
+        this.mesh.rotation = [0,0,0];
+        this.physics.setRotation(quat);        
         this.physics.setPosition([this.data.position_x, this.data.position_y, this.data.position_z]);
         this.physics.setLinearVelocity([this.data.velocity_x, this.data.velocity_y, this.data.velocity_z]);
-
+        this.physics.setAngularVelocity([this.data.angularVelocity_x, this.data.angularVelocity_y, this.data.angularVelocity_z]);        
     }
 });
 

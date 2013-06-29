@@ -200,36 +200,42 @@ Ext.define('Orbium.view.ChartWindow', {
     },
     getAxeValue: function(magnitude) {
 
+        /**
+         * I don't know why the physics object has method getLinearVelocity() and 
+         * getAngularVelocity() and don't have a getPosition() method.
+         * So I'll use the position attribute of the mesh object to get the position
+         */
         switch (magnitude) {
             case "x":
-                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.position.x;
+
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).mesh.position[0];
 
             case "y":
-                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.position.y;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).mesh.position[1];
 
             case "z":
-                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.position.z;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).mesh.position[2];
 
             case "vx":
-                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.velocity.x;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.getLinearVelocity()[0];
 
             case "vy":
-                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.velocity.y;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.getLinearVelocity()[1];
 
             case "vz":
-                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.velocity.z;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.getLinearVelocity()[2];
 
             case "wx":
-                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.angularVelocity.x;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.getAngularVelocity()[0];
 
             case "wy":
-                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.angularVelocity.y;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.getAngularVelocity()[1];
 
             case "wz":
-                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.angularVelocity.z;
+                return Orbium.app.mundo.bodyStore.getAt(this.kbody).physics.getAngularVelocity()[2];
 
             case "t":
-                return Orbium.app.mundo.physicsWorld.time;
+                return Orbium.app.mundo.timer.getSeconds();
         }
 
 

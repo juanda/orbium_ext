@@ -168,6 +168,7 @@ Ext.define('Orbium.world.World', {
         var me = this;
         // Start our main drawing loop, it provides a timer and the gl context as parameters
         this.loop = CubicVR.MainLoop(function(timer, gl) {
+            me.timer = timer;
             var seconds = timer.getSeconds();
 
             if (!timer.paused_state)
@@ -180,7 +181,8 @@ Ext.define('Orbium.world.World', {
             if (me.stats) {
                 me.stats.update();
             }
-        });
+            
+        });        
     },
     enableToolbarBody: function() {
         var toolbarBodies = Ext.ComponentQuery.query('orbiumtoolbarbodies');
@@ -196,7 +198,7 @@ Ext.define('Orbium.world.World', {
     },
     stopAnimation: function() {
         this.loop.setPaused(true);
-
+        
         this.bodyStore.each(function() {
             this.setInitParams(); // this is each body in the store
         });
@@ -206,12 +208,12 @@ Ext.define('Orbium.world.World', {
         this.fireEvent("stopAnimation");
     },
     pauseAnimation: function() {
-        this.loop.setPaused(true);
+        this.loop.setPaused(true);        
         this.fireEvent("pauseAnimation");
     },
     addBody: function(body) {
         this.bodyStore.add(body);
-        body.mesh.kbody = this.bodyStore.indexOf(body);
+        body.mesh.kbody = this.bodyStore.indexOf(body);        
 
         this.scene.bind(body.mesh, true); // second argument = pickable
         this.physicsWorld.bindRigidBody(body.physics);
