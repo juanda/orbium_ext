@@ -24,6 +24,9 @@ Ext.define('Orbium.controller.Toolbar', {
             },
             'orbiumtoolbarbodies button[action=chart]': {
                 click: this.onChart
+            },
+            'orbiumtoolbarbodies button[action=gravity]': {
+                click: this.onGravity
             }
         });
     },
@@ -55,6 +58,9 @@ Ext.define('Orbium.controller.Toolbar', {
         var kbody = 0;
         var w = Ext.create('Orbium.view.ChartWindow', kbody, "Velocity vs time", "x", "y");
         w.show();
+    },
+    onGravity: function() {
+        
     }
 
 });
