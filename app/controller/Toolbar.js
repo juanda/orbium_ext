@@ -6,6 +6,10 @@ Ext.define('Orbium.controller.Toolbar', {
     ],
     refs: [
         {
+            ref: 'btnPlay',
+            selector: 'orbiumtoolbarplayer button[action=play]'
+        },
+        {
             ref: 'btnGravity',
             selector: 'orbiumtoolbarbodies button[action=gravity]'
         },        
@@ -20,11 +24,8 @@ Ext.define('Orbium.controller.Toolbar', {
             'orbiumtoolbarplayer button[action=play]': {
                 click: this.onPlay
             },
-            'orbiumtoolbarplayer button[action=pause]': {
-                click: this.onPause
-            },
-            'orbiumtoolbarplayer button[action=stop]': {
-                click: this.onStop
+            'orbiumtoolbarplayer button[action=reset]': {
+                click: this.onReset
             },
             'orbiumtoolbarbodies button[action=addCube]': {
                 click: this.onAddCube
@@ -43,20 +44,27 @@ Ext.define('Orbium.controller.Toolbar', {
             }
         });
     },
-    onPlay: function() {
-        Orbium.app.consoleLog('play clicked');
-        Orbium.app.mundo.startAnimation();
+    onPlay: function() {        
+        if(this.getBtnPlay().pressed){
+            Orbium.app.mundo.startAnimation();
+
+            console.log(this.getBtnPlay());
+            this.getBtnPlay().setText("Pause");            
+        }
+        else{
+            Orbium.app.mundo.pauseAnimation();          
+            this.getBtnPlay().setText("Play");
+        }
     },
-    onPause: function() {
-        Orbium.app.consoleLog('pause clicked');
+    onPause: function() {       
         Orbium.app.mundo.pauseAnimation();
     },
-    onStop: function() {
-        Orbium.app.consoleLog('stop clicked');
-        Orbium.app.mundo.stopAnimation();
+    onReset: function() {        
+        this.getBtnPlay().pressed = false;
+        this.getBtnPlay().setText("Play");
+        Orbium.app.mundo.resetAnimation();
     },
-    onAddCube: function() {
-        Orbium.app.consoleLog('add cube clicked');
+    onAddCube: function() {        
         var cubeform = Ext.create('Orbium.view.form.CubeForm');
         cubeform.show();
 

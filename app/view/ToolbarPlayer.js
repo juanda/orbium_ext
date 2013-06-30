@@ -15,17 +15,13 @@ Ext.define('Orbium.view.ToolbarPlayer', {
             {
                 xtype: 'button',
                 action: 'play',
-                text: 'play'
+                text: 'Play',
+                enableToggle: true,
             },
             {
                 xtype: 'button',
-                action: 'pause',
-                text: 'pause'
-            },
-            {
-                xtype: 'button',
-                action: 'stop',
-                text: 'stop'
+                action: 'reset',
+                text: 'Reset'
             }
         ];
 

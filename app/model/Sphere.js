@@ -15,9 +15,10 @@ Ext.define('Orbium.model.Sphere', {
         );
         this.physics = new CubicVR.RigidBody(me.mesh, {
             type: CubicVR.enums.physics.body.DYNAMIC,
+            restitution: 0.99,
             collision: {
                 type: CubicVR.enums.collision.shape.SPHERE,
-                size: me.mesh.scale
+                radius: me.data.geometry_radius                
             }
         });
 

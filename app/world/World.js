@@ -125,9 +125,10 @@ Ext.define('Orbium.world.World', {
         this.rigidFloor = new CubicVR.RigidBody(this.floorObject, {
           type: CubicVR.enums.physics.body.STATIC,
           mass: 0,
+          restitution: 0.9999,
           collision: {
             type: CubicVR.enums.collision.shape.BOX,
-            size: this.floorObject.scale
+            size: this.floorObject.scale,            
           }
         });
 
@@ -229,7 +230,7 @@ Ext.define('Orbium.world.World', {
         this.loop.setPaused(false);
         this.fireEvent("startAnimation");
     },
-    stopAnimation: function() {
+    resetAnimation: function() {
         this.loop.setPaused(true);
 
         this.physicsWorld.reset();

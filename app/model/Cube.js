@@ -18,9 +18,10 @@ Ext.define('Orbium.model.Cube', {
         
         this.physics = new CubicVR.RigidBody(me.mesh, {
             type: CubicVR.enums.physics.body.DYNAMIC,
+            restitution: 0.99999,
             collision: {
                 type: CubicVR.enums.collision.shape.BOX,
-                size: me.mesh.scale
+                size: me.mesh.scale               
             }
         });
         
