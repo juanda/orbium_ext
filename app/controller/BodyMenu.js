@@ -5,15 +5,14 @@ Ext.define('Orbium.controller.BodyMenu', {
         this.control({
             
             'orbiumbodymenu > menuitem#display_graph': {
-                click: function(menuitem) {
-
+                click: function(menuitem) {                    
                     var kbody = Orbium.app.mundo.objectSelected.obj.kbody;
                     var w = Ext.create('Orbium.view.ChartWindow', kbody, "", "t", "x");
                     w.show();
                 }
             },
             'orbiumbodymenu > menuitem#change_properties': {
-                click: function(menuitem) {
+                click: function(menuitem) {                    
                     var kbody = Orbium.app.mundo.objectSelected.obj.kbody;                                        
                     
                     var form;

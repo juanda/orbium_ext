@@ -39,23 +39,8 @@ Ext.define('Orbium.model.Body', {
         this.physics = {}; // Object for physics (ammo.js) info
         this.mesh = {};    // Object for mesh (cubicvr.js) info         
     },
-    updatePhysicsAndMeshBodies: function() {
+    setInitParams: function() {   
 
-        // the solution to update the physics and mesh bodies
-        // asociated to the body is:
-        // - 1, remove the body from the world/scene
-        // - 2, create new physics body/mesh
-        // - 3, add these new physics to the world/scene
-        // - 4, render the world
-
-        // remove the physics body from the physics World
-        
-        console.log(this);        
-        this.setInitParams();
-        
-        Orbium.app.mundo.scene.render();
-    },
-    setInitParams: function() {        
         var quat = new CubicVR.Quaternion();
         quat.fromEuler(0,0,0);
         this.physics.setMass(this.data.physicParams_mass);

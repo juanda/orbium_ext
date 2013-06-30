@@ -9,7 +9,7 @@
 Ext.define('Orbium.view.ToolbarPlayer', {
     extend: 'Ext.toolbar.Toolbar',
     alias: 'widget.orbiumtoolbarplayer',
-    width: 200,
+    width: 140,
     initComponent: function() {
         this.items = [
             {

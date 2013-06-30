@@ -1,8 +1,18 @@
 Ext.define('Orbium.controller.Toolbar', {
     extend: 'Ext.app.Controller',
     requires: [
-        'Orbium.view.form.CubeForm',
-        'Orbium.view.form.SphereForm'
+    'Orbium.view.form.CubeForm',
+    'Orbium.view.form.SphereForm'
+    ],
+    refs: [
+        {
+            ref: 'btnGravity',
+            selector: 'orbiumtoolbarbodies button[action=gravity]'
+        },        
+        {
+            ref: 'btnFloor',
+            selector: 'orbiumtoolbarbodies button[action=floor]'
+        }
     ],
     init: function() {
 
@@ -21,6 +31,9 @@ Ext.define('Orbium.controller.Toolbar', {
             },
             'orbiumtoolbarbodies button[action=addBall]': {
                 click: this.onAddSphere
+            },            
+            'orbiumtoolbarbodies button[action=floor]': {
+                click: this.onFloor
             },
             'orbiumtoolbarbodies button[action=chart]': {
                 click: this.onChart
@@ -48,6 +61,12 @@ Ext.define('Orbium.controller.Toolbar', {
         cubeform.show();
 
     },
+    onFloor: function(){
+        if(this.getBtnFloor().pressed)
+            Orbium.app.mundo.addFloor();
+        else
+            Orbium.app.mundo.removeFloor();
+    },
     onAddSphere: function() {
         Orbium.app.consoleLog('add sphere clicked');
 
@@ -59,8 +78,11 @@ Ext.define('Orbium.controller.Toolbar', {
         var w = Ext.create('Orbium.view.ChartWindow', kbody, "Velocity vs time", "x", "y");
         w.show();
     },
-    onGravity: function() {
-        
+    onGravity: function() {        
+        if(this.getBtnGravity().pressed)
+            Orbium.app.mundo.physicsWorld.setGravity([0,0,0]);
+        else
+            Orbium.app.mundo.physicsWorld.setGravity([0,-10 ,0]);
     }
 
 });

@@ -271,7 +271,7 @@ Ext.define('Orbium.view.form.BodyForm', {
         
         var body = Orbium.app.mundo.bodyStore.getAt(this.kbody);
         form.updateRecord(body); 
-        body.updatePhysicsAndMeshBodies();
+        body.editBody();
     }
 });
 

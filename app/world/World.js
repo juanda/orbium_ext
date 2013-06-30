@@ -98,6 +98,39 @@ Ext.define('Orbium.world.World', {
             selected: textureSelected
         };
 
+        // Floor
+        var material3 = new CubicVR.Material({
+          specular:[1,1,1],
+          shininess: 0.9,
+          env_amount: 1.0,
+          textures: {
+            color:  new CubicVR.Texture("images/6583-diffuse.jpg"),
+          }
+        });
+        var floorMesh = CubicVR.primitives.box({
+          size: 1.0,
+          material: material3,
+          uvmapper: {
+            projectionMode: CubicVR.enums.uv.projection.CUBIC,
+            scale: [0.1, 0.1, 0.1]
+          }
+        }).prepare();
+
+        this.floorObject = new CubicVR.SceneObject({
+          mesh: floorMesh,
+          scale: [50, 0.2, 50],
+          position: [0, -5, 0],
+        });
+
+        this.rigidFloor = new CubicVR.RigidBody(this.floorObject, {
+          type: CubicVR.enums.physics.body.STATIC,
+          mass: 0,
+          collision: {
+            type: CubicVR.enums.collision.shape.BOX,
+            size: this.floorObject.scale
+          }
+        });
+
     },
     initScene: function(world) {
 
@@ -198,6 +231,8 @@ Ext.define('Orbium.world.World', {
     },
     stopAnimation: function() {
         this.loop.setPaused(true);
+
+        this.physicsWorld.reset();
         
         this.bodyStore.each(function() {
             this.setInitParams(); // this is each body in the store
@@ -249,5 +284,15 @@ Ext.define('Orbium.world.World', {
         
         this.bodyMenu.setPagePosition(this.objectSelected.obj.mousePosition[0], this.objectSelected.obj.mousePosition[1]);
         this.bodyMenu.show();
+    },
+    addFloor: function(){        
+        this.scene.bindSceneObject(this.floorObject);
+        this.physicsWorld.bindRigidBody(this.rigidFloor);  
+        //this.physicsWorld.reset();      
+    },
+    removeFloor: function(){
+        this.scene.removeSceneObject(this.floorObject);
+        this.physicsWorld.remove(this.rigidFloor);
+        //this.physicsWorld.reset();
     }
 });
